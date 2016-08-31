@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "start": "nodemon index.js",
     "test": "istanbul cover jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
@@ -27,6 +28,13 @@
     "eslint-plugin-jsx-a11y": "^2.1.0",
     "eslint-plugin-react": "^6.1.2",
     "istanbul": "^0.4.4",
-    "jasmine": "^2.4.1"
+    "jasmine": "^2.4.1",
+    "nodemon": "^1.10.0"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.5.9"
   }
 }
