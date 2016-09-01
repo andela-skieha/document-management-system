@@ -32,4 +32,14 @@ module.exports = {
       }
     });
   },
+
+  find: (req, res) => {
+    Document.findById(req.params.id, (err, document) => {
+      if (err) {
+        res.status(404).send({ error: 'Could not find document,' });
+      } else {
+        res.json(document);
+      }
+    });
+  },
 };
