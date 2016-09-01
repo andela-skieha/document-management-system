@@ -30,4 +30,14 @@ module.exports = {
       }
     });
   },
+
+  find: (req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err) {
+        res.send({ message: 'Could not fetch user.' });
+      } else {
+        res.json(user);
+      }
+    });
+  },
 };
