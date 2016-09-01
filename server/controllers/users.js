@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 const User = require('../models/user');
 
 module.exports = {
@@ -38,6 +40,31 @@ module.exports = {
       } else {
         res.json(user);
       }
+    });
+  },
+
+  update: (req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err) {
+        res.status(404).send({ message: 'Could not find user.' });
+      }
+      if (req.body.username) user.username = req.body.username;
+      if (req.body.first) user.name.first = req.body.first;
+      if (req.body.last) user.name.last = req.body.last;
+      if (req.body.email) user.email = req.body.email;
+      if (req.body.password) user.password = req.body.password;
+
+      user.save((error) => {
+        if (error) {
+          if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate entry' });
+          } else {
+            res.status(400).send({ message: 'Error updating user' });
+          }
+        } else {
+          res.status(201).send({ message: 'User updated successfully' });
+        }
+      });
     });
   },
 };
