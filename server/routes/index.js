@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
@@ -40,6 +40,22 @@ module.exports = (apiRouter) => {
        });
      }
    });
+  });
+
+  apiRouter.use((req, res, next) => {
+    const dmsToken = req.body.dmsToken || req.query.dmsToken || req.headers['x-access-token'];
+    if (dmsToken) {
+      jwt.verify(dmsToken, secret, (err, decoded) => {
+        if (err) {
+          res.status(403).send({ message: 'Failed to authenticate token.' });
+        } else {
+          req.decoded = decoded;
+          next();
+        }
+      });
+    } else {
+      res.status(403).send({ message: 'You are not authenticated.' });
+    }
   });
 
   users(apiRouter);
