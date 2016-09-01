@@ -47,6 +47,7 @@ module.exports = {
     User.findById(req.params.user_id, (err, user) => {
       if (err) {
         res.status(404).send({ message: 'Could not find user.' });
+        return;
       }
       if (req.body.username) user.username = req.body.username;
       if (req.body.first) user.name.first = req.body.first;
