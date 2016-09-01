@@ -6,5 +6,6 @@ module.exports = (router) => {
     .get(Users.all);
 
   router.route('/users/:user_id')
-   .get(Users.find);
+   .get(Users.find)
+   .put(Users.update);
 };
