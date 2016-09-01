@@ -19,11 +19,6 @@ const DocumentSchema = new Schema({
     ref: 'User',
   },
 
-  access: {
-    type: Schema.Types.ObjectId,
-    ref: 'Role',
-  },
-
   createdAt: {
     type: Date,
     default: Date.now,
