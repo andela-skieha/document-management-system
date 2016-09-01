@@ -20,4 +20,14 @@ module.exports = {
       }
     });
   },
+
+  all: (req, res) => {
+    User.find({}, (err, users) => {
+      if (err) {
+        res.send({ message: 'Could not fetch users.' });
+      } else {
+        res.json(users);
+      }
+    });
+  },
 };
