@@ -67,4 +67,14 @@ module.exports = {
       });
     });
   },
+
+  delete: (req, res) => {
+    User.remove({ _id: req.params.user_id }, (err) => {
+      if (err) {
+        res.status(400).send({ message: 'Could not delete user.' });
+      } else {
+        res.send({ message: 'User deleted sucessfully.' });
+      }
+    });
+  },
 };
