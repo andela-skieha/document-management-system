@@ -6,5 +6,6 @@ module.exports = (router) => {
     .get(Documents.all);
 
   router.route('/documents/:id')
-    .get(Documents.find);
+    .get(Documents.find)
+    .put(Documents.update);
 };

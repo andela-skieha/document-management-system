@@ -42,4 +42,28 @@ module.exports = {
       }
     });
   },
+
+  update: (req, res) => {
+    Document.findById(req.params.id, (err, document) => {
+      if (err) {
+        res.status(404).send({ error: 'Could not find document.' });
+        return;
+      }
+      Object.keys(req.body).forEach((key) => {
+        document[key] = req.body[key];
+      });
+
+      document.save((error) => {
+        if (error) {
+          if (error.code === 11000) {
+            res.status(409).send({ message: 'Duplicate entry' });
+          } else {
+            res.status(400).send({ message: 'Error updating document' });
+          }
+        } else {
+          res.status(201).send({ message: 'Document updated successfully' });
+        }
+      });
+    });
+  },
 };
