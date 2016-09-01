@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 
@@ -27,13 +29,8 @@ const UserSchema = new Schema({
   },
 
   role: {
-    type: Schema.Types.ObjectId,
-    ref: 'Role',
-  },
-
-  token: {
     type: String,
-    default: null,
+    default: 'user',
   },
 
   createdAt: {
@@ -47,7 +44,7 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function (next) {
   const user = this;
 
   if (!user.isModified('password')) {
