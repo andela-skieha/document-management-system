@@ -7,6 +7,7 @@ const User = require('../models/user');
 
 const secret = 'this is super secret';
 const users = require('./users');
+const documents = require('./documents');
 
 module.exports = (apiRouter) => {
   apiRouter.post('/users/login', (req, res) => {
@@ -59,6 +60,7 @@ module.exports = (apiRouter) => {
   });
 
   users(apiRouter);
+  documents(apiRouter);
 
   return apiRouter;
 };
