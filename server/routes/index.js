@@ -4,10 +4,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 const User = require('../models/user');
-
-const secret = 'this is super secret';
 const users = require('./users');
 const documents = require('./documents');
+const config = require('../config');
 
 module.exports = (apiRouter) => {
   apiRouter.post('/users/login', (req, res) => {
@@ -31,7 +30,7 @@ module.exports = (apiRouter) => {
              _id: user._id,
              email: user.email,
            };
-           const dmsToken = jwt.sign(userData, secret, { expiresIn: 86400 });
+           const dmsToken = jwt.sign(userData, config.secret, { expiresIn: 86400 });
 
            res.json({
              message: 'User logged in',
@@ -46,7 +45,7 @@ module.exports = (apiRouter) => {
   apiRouter.use((req, res, next) => {
     const dmsToken = req.body.dmsToken || req.query.dmsToken || req.headers['x-access-token'];
     if (dmsToken) {
-      jwt.verify(dmsToken, secret, (err, decoded) => {
+      jwt.verify(dmsToken, config.secret, (err, decoded) => {
         if (err) {
           res.status(403).send({ message: 'Failed to authenticate token.' });
         } else {
