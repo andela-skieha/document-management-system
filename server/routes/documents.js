@@ -7,5 +7,6 @@ module.exports = (router) => {
 
   router.route('/documents/:id')
     .get(Documents.find)
-    .put(Documents.update);
+    .put(Documents.update)
+    .delete(Documents.delete);
 };
