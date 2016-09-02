@@ -38,3 +38,6 @@ jspm_packages
 
 # coveralls file
 .coveralls.yml
+
+# .env file
+.env
