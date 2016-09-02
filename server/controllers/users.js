@@ -13,12 +13,12 @@ module.exports = {
     user.save((err) => {
       if (err) {
         if (err.code === 11000) {
-          res.status(409).send({ message: 'Duplicate user entry' });
+          res.status(409).send({ message: 'Duplicate user entry.' });
         } else {
-          res.status(400).send({ message: 'Error creating user' });
+          res.status(400).send({ message: 'Error creating user.' });
         }
       } else {
-        res.status(201).send({ message: 'User created successfully' });
+        res.status(201).send({ message: 'User created successfully.' });
       }
     });
   },
@@ -26,7 +26,9 @@ module.exports = {
   all: (req, res) => {
     User.find({}, (err, users) => {
       if (err) {
-        res.send({ message: 'Could not fetch users.' });
+        res.status(400).send({ error: 'Could not fetch users.' });
+      } else if (users.length === 0) {
+        res.status(404).send({ error: 'No users to retrieve.' });
       } else {
         res.json(users);
       }
@@ -35,8 +37,8 @@ module.exports = {
 
   find: (req, res) => {
     User.findById(req.params.user_id, (err, user) => {
-      if (err) {
-        res.send({ message: 'Could not fetch user.' });
+      if (err || user === null) {
+        res.status(404).send({ error: 'Could not fetch user.' });
       } else {
         res.json(user);
       }
@@ -45,8 +47,8 @@ module.exports = {
 
   update: (req, res) => {
     User.findById(req.params.user_id, (err, user) => {
-      if (err) {
-        res.status(404).send({ message: 'Could not find user.' });
+      if (err || user === null) {
+        res.status(404).send({ error: 'USer not found..' });
         return;
       }
       if (req.body.username) user.username = req.body.username;
@@ -58,24 +60,30 @@ module.exports = {
       user.save((error) => {
         if (error) {
           if (error.code === 11000) {
-            res.status(409).send({ message: 'Duplicate entry' });
+            res.status(409).send({ error: 'Duplicate entry.' });
           } else {
-            res.status(400).send({ message: 'Error updating user' });
+            res.status(400).send({ error: 'Error updating user.' });
           }
         } else {
-          res.status(201).send({ message: 'User updated successfully' });
+          res.status(201).send({ message: 'User updated successfully.' });
         }
       });
     });
   },
 
   delete: (req, res) => {
-    User.remove({ _id: req.params.user_id }, (err) => {
-      if (err) {
-        res.status(400).send({ message: 'Could not delete user.' });
-      } else {
-        res.send({ message: 'User deleted sucessfully.' });
+    User.findById(req.params.user_id, (err, user) => {
+      if (err || user === null) {
+        res.status(404).send({ error: 'User not found.' });
+        return;
       }
+      user.remove((error) => {
+        if (error) {
+          res.status(400).send({ error: 'Could not delete user.' });
+        } else {
+          res.send({ message: 'User deleted successfully.' });
+        }
+      });
     });
   },
 };
