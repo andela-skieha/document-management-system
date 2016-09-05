@@ -10,6 +10,12 @@ const config = require('./server/config');
 const app = express();
 const apiRouter = express.Router();
 
+const env = process.env.NODE_ENV;
+if (env === 'test') {
+  config.database = config.test_database;
+  config.port = 8080;
+}
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api', routes(apiRouter));
