@@ -9,4 +9,6 @@ module.exports = (router) => {
    .get(Users.find)
    .put(Users.update)
    .delete(Users.delete);
+
+  router.get('/users/:user_id/documents', Users.getUserDocuments);
 };
