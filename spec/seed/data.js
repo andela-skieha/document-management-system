@@ -6,7 +6,7 @@ module.exports = {
   users: [
     {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
-      username: 'user1',
+      username: 'janedoe',
       name: {
         firstname: 'Jane',
         lastname: 'Doe',
@@ -17,7 +17,7 @@ module.exports = {
 
     {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f0829'),
-      username: 'user2',
+      username: 'johndoe',
       name: {
         firstname: 'John',
         lastname: 'Doe',
@@ -28,7 +28,7 @@ module.exports = {
 
     {
       _id: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
-      username: 'user3',
+      username: 'maybesydney',
       name: {
         firstname: 'Sydney',
         lastname: 'Maybe',
@@ -39,7 +39,7 @@ module.exports = {
 
     {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
-      username: 'user4',
+      username: 'wonderwall',
       name: {
         firstname: 'Wonder',
         lastname: 'Wall',
