@@ -22,9 +22,7 @@ module.exports = (apiRouter) => {
      } else if (user) {
        bcrypt.compare(req.body.password, user.password, (error, result) => {
          if (result !== true) {
-           res.json({
-             error: 'Wrong password supplied',
-           });
+           res.status(403).send({ error: 'Wrong password supplied' });
          } else {
            const userData = {
              _id: user._id,
@@ -32,7 +30,7 @@ module.exports = (apiRouter) => {
            };
            const dmsToken = jwt.sign(userData, config.secret, { expiresIn: 86400 });
 
-           res.json({
+           res.status(200).send({
              message: 'User logged in',
              token: dmsToken,
            });
