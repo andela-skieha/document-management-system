@@ -11,11 +11,19 @@ mongoose.connect(config.test_database, (err) => {
 
 mongoose.connection.on('connected', () => {
   User.remove({}, (err) => {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Successfully removed users');
+    }
   });
 
   Document.remove({}, (err) => {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Successfully removed documents');
+    }
     process.exit();
   });
 });
