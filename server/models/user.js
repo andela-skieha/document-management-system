@@ -9,11 +9,12 @@ const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
   },
 
   name: {
-    first: String,
-    last: String,
+    firstname: String,
+    lastname: String,
   },
 
   email: {
@@ -32,17 +33,12 @@ const UserSchema = new Schema({
     type: String,
     default: 'user',
   },
+},
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 UserSchema.pre('save', function (next) {
   const user = this;
