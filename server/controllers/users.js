@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
 
 const User = require('../models/user');
+const Document = require('../models/document');
 
 module.exports = {
   create: (req, res) => {
@@ -82,6 +84,24 @@ module.exports = {
           res.status(400).send({ error: 'Could not delete user.' });
         } else {
           res.send({ message: 'User deleted successfully.' });
+        }
+      });
+    });
+  },
+
+  getUserDocuments: (req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err || user === null) {
+        res.status(404).send({ error: 'User not found.' });
+        return;
+      }
+      Document.find({ owner: user._id }, (error, documents) => {
+        if (error) {
+          res.status(400).send({ error: 'Could not fetch documents.' });
+        } else if (documents.length === 0) {
+          res.status(404).send({ error: 'No documents found.' });
+        } else {
+          res.json(documents);
         }
       });
     });
