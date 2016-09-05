@@ -6,7 +6,7 @@ module.exports = {
   create: (req, res) => {
     const user = new User();
     user.username = req.body.username;
-    user.name = { first: req.body.first, last: req.body.last };
+    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
     user.email = req.body.email;
     user.password = req.body.password;
 
@@ -52,8 +52,8 @@ module.exports = {
         return;
       }
       if (req.body.username) user.username = req.body.username;
-      if (req.body.first) user.name.first = req.body.first;
-      if (req.body.last) user.name.last = req.body.last;
+      if (req.body.firstname) user.name.firstname = req.body.firstname;
+      if (req.body.lastname) user.name.lastname = req.body.lastname;
       if (req.body.email) user.email = req.body.email;
       if (req.body.password) user.password = req.body.password;
 

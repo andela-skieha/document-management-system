@@ -18,16 +18,11 @@ const DocumentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+},
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model('Document', DocumentSchema);

@@ -11,9 +11,9 @@ const config = require('../config');
 module.exports = (apiRouter) => {
   apiRouter.post('/users/login', (req, res) => {
     User.findOne({
-      email: req.body.email,
+      username: req.body.username,
     })
-   .select('email password')
+   .select('username password')
    .exec((err, user) => {
      if (err) throw err;
 

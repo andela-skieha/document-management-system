@@ -8,8 +8,8 @@ module.exports = {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
       username: 'user1',
       name: {
-        first: 'Jane',
-        last: 'Doe',
+        firstname: 'Jane',
+        lastname: 'Doe',
       },
       email: 'jane@doe.com',
       password: 'password1',
@@ -19,8 +19,8 @@ module.exports = {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f0829'),
       username: 'user2',
       name: {
-        first: 'John',
-        last: 'Doe',
+        firstname: 'John',
+        lastname: 'Doe',
       },
       email: 'john@doe.com',
       password: 'password2',
@@ -30,8 +30,8 @@ module.exports = {
       _id: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
       username: 'user3',
       name: {
-        first: 'Sydney',
-        last: 'Maybe',
+        firstname: 'Sydney',
+        lastname: 'Maybe',
       },
       email: 'sydney@maybe.com',
       password: 'password3',
@@ -41,8 +41,8 @@ module.exports = {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
       username: 'user4',
       name: {
-        first: 'Wonder',
-        last: 'Wall',
+        firstname: 'Wonder',
+        lastname: 'Wall',
       },
       email: 'wonder@wall.com',
       password: 'password4',
