@@ -67,7 +67,7 @@ module.exports = {
             res.status(400).send({ error: 'Error updating user.' });
           }
         } else {
-          res.status(201).send({ message: 'User updated successfully.' });
+          res.status(200).send({ message: 'User updated successfully.' });
         }
       });
     });

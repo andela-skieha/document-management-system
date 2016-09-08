@@ -89,6 +89,7 @@ describe('User routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(200);
       expect(res.body).toBeDefined();
+      expect((Object.keys(res.body)).length).toBeGreaterThan(0);
       done();
     });
   });
@@ -100,6 +101,50 @@ describe('User routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Could not fetch user.');
+      done();
+    });
+  });
+
+  it('updates user details', (done) => {
+    request
+    .put('/api/users/57c96a56cd9ca231483f082b')
+    .set('x-access-token', token)
+    .send({
+      firstname: 'Jennifer',
+      lastname: 'Aniston',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('User updated successfully.');
+      done();
+    });
+  });
+
+  it('Rejects duplicate usernames and emails', (done) => {
+    request
+    .put('/api/users/57c96a56cd9ca231483f082b')
+    .set('x-access-token', token)
+    .send({
+      username: 'maybesydney',
+      email: 'sydney@maybe.com',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(409);
+      expect(res.body.error).toBe('Duplicate entry.');
+      done();
+    });
+  });
+
+  it('Does not update users that do not exist', (done) => {
+    request
+    .put('/api/users/57c96a56cd9ca231483f082')
+    .set('x-access-token', token)
+    .send({
+      username: 'Gold',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('User not found.');
       done();
     });
   });
