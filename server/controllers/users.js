@@ -20,7 +20,10 @@ module.exports = {
           res.status(400).send({ message: 'Error creating user.' });
         }
       } else {
-        res.status(201).send({ message: 'User created successfully.' });
+        res.status(201).send({
+          message: 'User created successfully.',
+          user,
+        });
       }
     });
   },

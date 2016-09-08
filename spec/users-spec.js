@@ -1,10 +1,12 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+/* eslint-disable no-underscore-dangle */
 
 const app = require('../index');
 const request = require('supertest')(app);
 
 describe('User routes', () => {
   let token;
+  let userId;
 
   beforeEach((done) => {
     request
@@ -31,6 +33,7 @@ describe('User routes', () => {
       password: 'locksywocksy',
     })
     .end((err, res) => {
+      userId = res.body.user._id;
       expect(res.status).toBe(201);
       expect(res.body.message).toBe('User created successfully.');
       done();
@@ -151,7 +154,7 @@ describe('User routes', () => {
 
   it('Deletes a user by id', (done) => {
     request
-    .delete('/api/users/57c96a56cd9ca231483f082c')
+    .delete(`/api/users/${userId}`)
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(200);
