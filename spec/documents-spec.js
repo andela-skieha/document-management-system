@@ -66,4 +66,39 @@ describe('Document routes', () => {
       done();
     });
   });
+
+  it('Gets all documents', (done) => {
+    request
+    .get('/api/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(Array.isArray(res.body)).toBe(true);
+      done();
+    });
+  });
+
+  it('Gets a document by id', (done) => {
+    request
+    .get(`/api/documents/${documentId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect((Object.keys(res.body)).length).toBeGreaterThan(0);
+      done();
+    });
+  });
+
+  it('Returns error message if document is not found', (done) => {
+    request
+    .get('/api/documents/9e799c0e692b79bdc83f082a')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('Could not find document.');
+      done();
+    });
+  });
 });
