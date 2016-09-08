@@ -62,11 +62,12 @@ module.exports = {
         if (error) {
           if (error.code === 11000) {
             res.status(409).send({ error: 'Duplicate entry.' });
-          } else {
-            res.status(400).send({ error: 'Error updating document.' });
+            return;
           }
+        } else if (Object.keys(req.body).length === 0) {
+          res.status(400).send({ error: 'Nothing to update.' });
         } else {
-          res.status(201).send({ message: 'Document updated successfully.' });
+          res.status(200).send({ message: 'Document updated successfully.' });
         }
       });
     });
