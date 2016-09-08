@@ -148,4 +148,26 @@ describe('User routes', () => {
       done();
     });
   });
+
+  it('Deletes a user by id', (done) => {
+    request
+    .delete('/api/users/57c96a56cd9ca231483f082c')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('User deleted successfully.');
+      done();
+    });
+  });
+
+  it('Does not delete non-existant users', (done) => {
+    request
+    .delete('/api/users/57c96a56cd9ca231483f082')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('User not found.');
+      done();
+    });
+  });
 });
