@@ -32,7 +32,7 @@ module.exports = {
       } else if (users.length === 0) {
         res.status(404).send({ error: 'No users to retrieve.' });
       } else {
-        res.json(users);
+        res.status(200).send(users);
       }
     });
   },
@@ -42,7 +42,7 @@ module.exports = {
       if (err || user === null) {
         res.status(404).send({ error: 'Could not fetch user.' });
       } else {
-        res.json(user);
+        res.status(200).send(user);
       }
     });
   },
@@ -50,7 +50,7 @@ module.exports = {
   update: (req, res) => {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
-        res.status(404).send({ error: 'USer not found..' });
+        res.status(404).send({ error: 'User not found.' });
         return;
       }
       if (req.body.username) user.username = req.body.username;
@@ -83,7 +83,7 @@ module.exports = {
         if (error) {
           res.status(400).send({ error: 'Could not delete user.' });
         } else {
-          res.send({ message: 'User deleted successfully.' });
+          res.status(200).send({ message: 'User deleted successfully.' });
         }
       });
     });
@@ -101,7 +101,7 @@ module.exports = {
         } else if (documents.length === 0) {
           res.status(404).send({ error: 'No documents found.' });
         } else {
-          res.json(documents);
+          res.status(200).send(documents);
         }
       });
     });
