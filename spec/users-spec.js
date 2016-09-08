@@ -87,7 +87,7 @@ describe('User routes', () => {
 
   it('finds users by their ids', (done) => {
     request
-    .get('/api/users/57c96a56cd9ca231483f082c')
+    .get(`/api/users/${userId}`)
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(200);
@@ -110,7 +110,7 @@ describe('User routes', () => {
 
   it('updates user details', (done) => {
     request
-    .put('/api/users/57c96a56cd9ca231483f082b')
+    .put(`/api/users/${userId}`)
     .set('x-access-token', token)
     .send({
       firstname: 'Jennifer',
@@ -125,7 +125,7 @@ describe('User routes', () => {
 
   it('Rejects duplicate usernames and emails', (done) => {
     request
-    .put('/api/users/57c96a56cd9ca231483f082b')
+    .put(`/api/users/${userId}`)
     .set('x-access-token', token)
     .send({
       username: 'maybesydney',
