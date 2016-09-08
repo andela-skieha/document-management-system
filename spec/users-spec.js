@@ -173,4 +173,38 @@ describe('User routes', () => {
       done();
     });
   });
+
+  it('Gets documents belongong to a specific user', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(Array.isArray(res.body)).toBe(true);
+      done();
+    });
+  });
+
+  it('Throws error for a non-existant user', (done) => {
+    request
+    .get(`/api/users/${userId}/documents`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('User not found.');
+      done();
+    });
+  });
+
+  it('Returns "not found" for users with no documents', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f0829/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('No documents found.');
+      done();
+    });
+  });
 });

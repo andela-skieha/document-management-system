@@ -82,7 +82,7 @@ module.exports = {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
       title: 'Hardy Boys',
       content: 'Mystery solving dudes',
-      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f0829'),
+      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
     },
   ],
 };
