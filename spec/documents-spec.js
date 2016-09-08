@@ -101,4 +101,58 @@ describe('Document routes', () => {
       done();
     });
   });
+
+  it('Updates documents', (done) => {
+    request
+    .put(`/api/documents/${documentId}`)
+    .set('x-access-token', token)
+    .send({
+      content: 'Hello',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Document updated successfully.');
+      done();
+    });
+  });
+
+  it('Rejects duplicate titles', (done) => {
+    request
+    .put(`/api/documents/${documentId}`)
+    .set('x-access-token', token)
+    .send({
+      title: 'Lord of the Rings',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(409);
+      expect(res.body.error).toBe('Duplicate entry.');
+      done();
+    });
+  });
+
+  it('Does not update non-existant documents', (done) => {
+    request
+    .put('/api/documents/57cd551476d7f2790eb87c47')
+    .set('x-access-token', token)
+    .send({
+      title: 'Lord of the Rings',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('Document not found.');
+      done();
+    });
+  });
+
+  it('Does not update documents if no data is provided', (done) => {
+    request
+    .put(`/api/documents/${documentId}`)
+    .set('x-access-token', token)
+    .send({})
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Nothing to update.');
+      done();
+    });
+  });
 });
