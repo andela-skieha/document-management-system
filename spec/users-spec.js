@@ -69,4 +69,38 @@ describe('User routes', () => {
       done();
     });
   });
+
+  it('gets all users when requested', (done) => {
+    request
+    .get('/api/users')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(Array.isArray(res.body)).toBe(true);
+      done();
+    });
+  });
+
+  it('finds users by their ids', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      done();
+    });
+  });
+
+  it('returns an error message if user is not found', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f082')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('Could not fetch user.');
+      done();
+    });
+  });
 });
