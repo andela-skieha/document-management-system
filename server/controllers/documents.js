@@ -18,7 +18,10 @@ module.exports = {
           res.status(400).send({ error: 'Error creating document.' });
         }
       } else {
-        res.status(201).send({ message: 'Document created successfully.' });
+        res.status(201).send({
+          message: 'Document created successfully.',
+          document,
+        });
       }
     });
   },
@@ -30,7 +33,7 @@ module.exports = {
       } else if (documents.length === 0) {
         res.status(404).send({ error: 'No documents to retrieve.' });
       } else {
-        res.json(documents);
+        res.status(200).send(documents);
       }
     });
   },
@@ -40,7 +43,7 @@ module.exports = {
       if (err || document === null) {
         res.status(404).send({ error: 'Could not find document.' });
       } else {
-        res.json(document);
+        res.status(200).send(document);
       }
     });
   },
@@ -79,7 +82,7 @@ module.exports = {
         if (error) {
           res.status(400).send({ error: 'Could not delete document.' });
         } else {
-          res.send({ message: 'Document deleted successfully.' });
+          res.status(200).send({ message: 'Document deleted successfully.' });
         }
       });
     });
