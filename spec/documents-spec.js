@@ -155,4 +155,26 @@ describe('Document routes', () => {
       done();
     });
   });
+
+  it('Deletes a document by id', (done) => {
+    request
+    .delete(`/api/documents/${documentId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Document deleted successfully.');
+      done();
+    });
+  });
+
+  it('Does not delete non-existant documents', (done) => {
+    request
+    .delete('/api/documents/sfr456jgih6hv39y5343')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('Document not found.');
+      done();
+    });
+  });
 });
