@@ -130,6 +130,7 @@ describe('User routes', () => {
     .send({
       username: 'maybesydney',
       email: 'sydney@maybe.com',
+      password: 'jhene',
     })
     .end((err, res) => {
       expect(res.status).toBe(409);
@@ -148,6 +149,18 @@ describe('User routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('User not found.');
+      done();
+    });
+  });
+
+  it('Does not update users if no data is provided', (done) => {
+    request
+    .put(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .send({})
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Nothing to update.');
       done();
     });
   });
