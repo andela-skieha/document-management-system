@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "nodemon index.js",
-    "pretest": "node spec/seed/dropdb.js & \nsleep 3 \n node spec/seed/createdb.js & \nsleep 3",
+    "pretest": "node spec/seed/dropdb.js & \nsleep 3 \n node spec/seed/createdb.js",
     "test": "NODE_ENV='test' istanbul cover jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
