@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 
 const MongoClient = require('mongodb').MongoClient;
-const config = require('../../server/config');
+// const config = require('../../server/config');
 
-MongoClient.connect(config.test_database, (err, db) => {
+const url = 'mongodb://localhost/dms-test';
+
+MongoClient.connect(url, (err, db) => {
   if (err) {
     console.error('Mongoose error: ', err);
   } else {

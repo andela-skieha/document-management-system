@@ -9,7 +9,7 @@ describe('User routes', () => {
   let token;
   let userId;
 
-  beforeEach((done) => {
+  beforeAll((done) => {
     request
     .post('/api/users/login')
     .send({
