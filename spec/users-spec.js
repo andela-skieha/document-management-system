@@ -1,6 +1,7 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 /* eslint-disable no-underscore-dangle */
 
+const User = require('../server/models/user');
 const app = require('../index');
 const request = require('supertest')(app);
 
@@ -38,6 +39,22 @@ describe('User routes', () => {
       expect(res.body.message).toBe('User created successfully.');
       done();
     });
+  });
+
+  it('checks if new users are unique', (done) => {
+    const username = User.schema.paths.username;
+    const email = User.schema.paths.email;
+    expect(username.options.unique).toBe(true);
+    expect(email.options.unique).toBe(true);
+    done();
+  });
+
+  it('checks if new users have first/lastname properties', (done) => {
+    const firstname = User.schema.path('name.firstname');
+    const lastname = User.schema.path('name.lastname');
+    expect(firstname.options.required).toBe(true);
+    expect(lastname.options.required).toBe(true);
+    done();
   });
 
   it('does not create duplicate user entries', (done) => {
