@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 const app = require('../index');
+const Document = require('../server/models/document');
 const request = require('supertest')(app);
 
 describe('Document routes', () => {
@@ -34,6 +35,26 @@ describe('Document routes', () => {
       expect(res.status).toBe(201);
       expect(res.body.message).toBe('Document created successfully.');
       expect(res.body.document).toBeDefined();
+      done();
+    });
+  });
+
+  it('Checks if new documents have unique titles', (done) => {
+    const title = Document.schema.paths.title;
+    expect(title.options.unique).toBe(true);
+    done();
+  });
+
+  it('Checks if new documents have owners', (done) => {
+    request
+    .post('/api/documents')
+    .set('x-access-token', token)
+    .send({
+      title: 'Fugees',
+      content: 'Killing me softly',
+    })
+    .end((err, res) => {
+      expect();
       done();
     });
   });

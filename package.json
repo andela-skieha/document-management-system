@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "nodemon index.js",
-    "pretest": "node spec/seed/dropdb.js & \nsleep 3 \n node spec/seed/createdb.js",
+    "pretest": "node spec/seed/dropdb.js & \nsleep 3 \n node spec/seed/createdb.js & \nsleep 3",
     "test": "NODE_ENV='test' istanbul cover jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
@@ -39,6 +39,7 @@
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
+    "mongodb": "^2.2.9",
     "mongoose": "^4.5.9"
   }
 }
