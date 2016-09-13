@@ -1,31 +1,31 @@
 /* eslint-disable no-console */
 
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 const config = require('../../server/config');
 const seedData = require('./data');
 
-MongoClient.connect(config.test_database, (err, db) => {
-  if (err) {
-    console.error('Mongoose error: ', err);
-  } else {
-    const users = db.collection('users');
-    const documents = db.collection('documents');
+const User = require('../../server/models/user');
+const Document = require('../../server/models/document');
 
-    users.insert(seedData.users, (error) => {
-      if (err) {
-        console.error(error);
-      } else {
-        console.log('Successfully seeded users');
-      }
-    });
+mongoose.connect(config.test_database, (err) => {
+  if (err) console.error('Mongoose error: ', err);
+});
 
-    documents.insert(seedData.documents, (error) => {
-      if (err) {
-        console.error(error);
-      } else {
-        console.log('Successfully seeded documents');
-      }
-      process.exit();
-    });
-  }
+mongoose.connection.on('connected', () => {
+  User.create(seedData.users, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Successfully seeded users');
+    }
+    process.exit();
+  });
+
+  Document.create(seedData.documents, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Successfully seeded documents');
+    }
+  });
 });

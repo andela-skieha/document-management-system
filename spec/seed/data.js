@@ -1,7 +1,6 @@
 /* eslint-disable new-cap */
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
 
 module.exports = {
   users: [
@@ -13,7 +12,7 @@ module.exports = {
         lastname: 'Doe',
       },
       email: 'jane@doe.com',
-      password: bcrypt.hashSync('password1'),
+      password: 'password1',
     },
 
     {
@@ -24,7 +23,7 @@ module.exports = {
         lastname: 'Doe',
       },
       email: 'john@doe.com',
-      password: bcrypt.hashSync('password2'),
+      password: 'password2',
     },
 
     {
@@ -35,7 +34,7 @@ module.exports = {
         lastname: 'Maybe',
       },
       email: 'sydney@maybe.com',
-      password: bcrypt.hashSync('password3'),
+      password: 'password3',
     },
 
     {
@@ -46,7 +45,7 @@ module.exports = {
         lastname: 'Wall',
       },
       email: 'wonder@wall.com',
-      password: bcrypt.hashSync('password4'),
+      password: 'password4',
     },
   ],
 
