@@ -7,8 +7,8 @@ const app = require('../index');
 const request = require('supertest')(app);
 
 describe('User routes', () => {
-  let token;
-  let userId;
+  var token;
+  var userId;
 
   beforeAll((done) => {
     request
