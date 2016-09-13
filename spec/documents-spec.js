@@ -54,7 +54,25 @@ describe('Document routes', () => {
       content: 'Killing me softly',
     })
     .end((err, res) => {
-      expect();
+      expect(res.status).toBe(201);
+      expect({}.hasOwnProperty.call(res.body.document, 'owner')).toBe(true);
+      expect(res.body.document.owner).toBeDefined();
+      done();
+    });
+  });
+
+  it('Checks if new documents have dates of creation', (done) => {
+    request
+    .post('/api/documents')
+    .set('x-access-token', token)
+    .send({
+      title: 'The Prostrate Years',
+      content: 'Sue Townsend',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(201);
+      expect({}.hasOwnProperty.call(res.body.document, 'createdAt')).toBe(true);
+      expect(res.body.document.createdAt).toBeDefined();
       done();
     });
   });
