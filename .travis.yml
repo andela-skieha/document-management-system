@@ -3,4 +3,4 @@ node_js:
   - "6"
 services:
   - mongodb
-script: "$(which npm) test"
+script: "npm test"

@@ -1,14 +1,13 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-var */
 
 const User = require('../server/models/user');
 const app = require('../index');
 const request = require('supertest')(app);
 
 describe('User routes', () => {
-  var token;
-  var userId;
+  let token;
+  let userId;
 
   beforeAll((done) => {
     request
