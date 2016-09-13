@@ -27,7 +27,12 @@ module.exports = {
   },
 
   all: (req, res) => {
-    Document.find({}, (err, documents) => {
+    Document
+    .find({})
+    .skip(parseInt(req.query.offset, 10))
+    .limit(parseInt(req.query.limit, 10))
+    .sort({ createdAt: -1 })
+    .exec((err, documents) => {
       if (err) {
         res.status(400).send({ error: 'Could not fetch documents.' });
       } else if (documents.length === 0) {
