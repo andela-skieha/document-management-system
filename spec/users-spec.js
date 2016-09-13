@@ -1,5 +1,6 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable no-var */
 
 const User = require('../server/models/user');
 const app = require('../index');
