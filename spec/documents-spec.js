@@ -118,6 +118,18 @@ describe('Document routes', () => {
     });
   });
 
+  it('Gets documents based on specified limit', (done) => {
+    request
+    .get('/api/documents?limit=4')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(res.body.length).toBe(4);
+      done();
+    });
+  });
+
   it('Gets a document by id', (done) => {
     request
     .get(`/api/documents/${documentId}`)
