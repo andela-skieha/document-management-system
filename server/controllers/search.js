@@ -20,6 +20,8 @@ module.exports = {
           res.status(200).send(documents);
         }
       });
+    } else {
+      res.status(400).send({ error: 'No search terms provided.' });
     }
   },
 };
