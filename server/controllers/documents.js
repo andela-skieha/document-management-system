@@ -48,7 +48,7 @@ module.exports = {
   find: (req, res) => {
     Document.findById(req.params.id)
     .populate({
-      path: 'role',
+      path: 'role owner',
       populate: {
         path: 'members',
         select: 'username -_id',
@@ -58,7 +58,16 @@ module.exports = {
       if (err || document === null) {
         res.status(404).send({ error: 'Could not find document.' });
       } else {
-        res.status(200).send(document);
+        const documentFound = {
+          title: document.title,
+          content: document.content,
+          owner: document.owner.username,
+          role: {
+            title: document.role.title,
+            members: document.role.members,
+          },
+        };
+        res.status(200).send(documentFound);
       }
     });
   },
