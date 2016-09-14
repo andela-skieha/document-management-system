@@ -8,6 +8,7 @@ module.exports = {
     const document = new Document();
     document.title = req.body.title;
     document.content = req.body.content;
+    document.role = req.body.role;
     document.owner = req.decoded._id;
 
     document.save((err) => {
@@ -32,6 +33,7 @@ module.exports = {
     .skip(parseInt(req.query.offset, 10))
     .limit(parseInt(req.query.limit, 10))
     .sort({ createdAt: -1 })
+    .populate('owner role', 'username title -_id')
     .exec((err, documents) => {
       if (err) {
         res.status(400).send({ error: 'Could not fetch documents.' });
@@ -44,7 +46,15 @@ module.exports = {
   },
 
   find: (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
+    Document.findById(req.params.id)
+    .populate({
+      path: 'role',
+      populate: {
+        path: 'members',
+        select: 'username -_id',
+      },
+    })
+    .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Could not find document.' });
       } else {

@@ -18,6 +18,11 @@ const DocumentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+
+  role: {
+    type: Schema.Types.ObjectId,
+    ref: 'Role',
+  },
 },
 
   {
