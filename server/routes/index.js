@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt-nodejs');
 const User = require('../models/user');
 const users = require('./users');
 const documents = require('./documents');
+const roles = require('./roles');
 const config = require('../config');
 
 module.exports = (apiRouter) => {
@@ -58,6 +59,7 @@ module.exports = (apiRouter) => {
 
   users(apiRouter);
   documents(apiRouter);
+  roles(apiRouter);
 
   return apiRouter;
 };
