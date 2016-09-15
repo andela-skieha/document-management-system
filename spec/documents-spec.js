@@ -130,6 +130,20 @@ describe('Document routes', () => {
     });
   });
 
+  it('Returns documents in order of their published dates', (done) => {
+    request
+    .get('/api/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      if (res.body.length > 1) {
+        expect(res.body[0].createdAt).toBeGreaterThan(res.body[1].createdAt);
+      }
+      done();
+    });
+  });
+
   it('Gets a document by id', (done) => {
     request
     .get(`/api/documents/${documentId}`)
