@@ -12,7 +12,9 @@ module.exports = {
           $lt: endDate,
         },
       })
+      .limit(parseInt(req.query.limit, 10))
       .sort({ createdAt: -1 })
+      .populate('owner role', 'username title -_id')
       .exec((err, documents) => {
         if (err || documents.length === 0) {
           res.status(404).send({ error: `No documents created on ${req.query.date} were found.` });
