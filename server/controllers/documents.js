@@ -57,6 +57,14 @@ module.exports = {
     .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Could not find document.' });
+      } else if (document.role === undefined) {
+        const documentFound = {
+          title: document.title,
+          content: document.content,
+          owner: document.owner.username,
+        };
+
+        res.status(200).send(documentFound);
       } else {
         const documentFound = {
           title: document.title,
@@ -67,6 +75,7 @@ module.exports = {
             members: document.role.members,
           },
         };
+
         res.status(200).send(documentFound);
       }
     });
