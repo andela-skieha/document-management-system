@@ -30,6 +30,7 @@ module.exports = {
     Role
     .find({})
     .populate('owner members', 'username -_id')
+    .sort({ createdAt: -1 })
     .exec((err, roles) => {
       if (err) {
         res.status(400).send({ error: 'Could not fetch roles.' });

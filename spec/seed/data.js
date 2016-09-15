@@ -86,5 +86,34 @@ module.exports = {
       content: 'Mystery solving dudes',
       owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
     },
+
+    {
+      _id: mongoose.Types.ObjectId('57d9953400a4a95476ad4c34'),
+      title: 'Change your names',
+      content: 'You Doe-s need to get real names',
+      owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
+      role: mongoose.Types.ObjectId('57d990a37f43cea7757befc0'),
+    },
+  ],
+
+  roles: [
+    {
+      _id: mongoose.Types.ObjectId('57d990a37f43cea7757befc0'),
+      title: 'The Doe-s',
+      members: [
+        '57c96a56cd9ca231483f082b',
+        '57c96a56cd9ca231483f0829',
+      ],
+      owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
+    },
+
+    {
+      _id: mongoose.Types.ObjectId('57d9af115317052f7a16cad1'),
+      title: 'Random',
+      members: [
+        '57c96a56cd9ca231483f082c',
+      ],
+      owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
+    },
   ],
 };
