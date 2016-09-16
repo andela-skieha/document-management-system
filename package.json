@@ -40,6 +40,7 @@
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.9",
-    "mongoose": "^4.5.9"
+    "mongoose": "^4.5.9",
+    "morgan": "^1.7.0"
   }
 }
