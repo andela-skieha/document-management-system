@@ -53,7 +53,7 @@ module.exports = (apiRouter) => {
         }
       });
     } else {
-      res.status(403).send({ message: 'You are not authenticated.' });
+      res.status(401).send({ message: 'You are not authenticated.' });
     }
   });
 
