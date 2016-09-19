@@ -51,7 +51,7 @@ describe('User Authentication', () => {
     request
     .get('/api/users')
     .end((err, res) => {
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(401);
       expect(res.body.message).toBe('You are not authenticated.');
       done();
     });
