@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
+/* eslint-disable eqeqeq */
 
 const Role = require('../models/role');
 
@@ -60,7 +61,7 @@ module.exports = {
     Role.findById(req.params.id, (err, role) => {
       if (err || role === null) {
         res.status(404).send({ error: 'Role not found.' });
-      } else if (req.decoded.id === role.owner) {
+      } else if (req.decoded._id == role.owner) {
         if (req.body.title) role.title = req.body.title;
 
         if (req.body.addMembers) {

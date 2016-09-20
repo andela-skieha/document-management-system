@@ -104,7 +104,7 @@ module.exports = {
         '57c96a56cd9ca231483f082b',
         '57c96a56cd9ca231483f0829',
       ],
-      owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
+      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
     },
 
     {
@@ -113,7 +113,7 @@ module.exports = {
       members: [
         '57c96a56cd9ca231483f082c',
       ],
-      owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
+      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f0829'),
     },
   ],
 };

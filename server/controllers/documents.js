@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable eqeqeq */
 
 const Document = require('../models/document');
 
@@ -86,7 +87,7 @@ module.exports = {
     .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Document not found.' });
-      } else if (req.decoded._id === document.owner) {
+      } else if (req.decoded._id == document.owner) {
         Object.keys(req.body).forEach((key) => {
           document[key] = req.body[key];
         });
@@ -111,11 +112,10 @@ module.exports = {
 
   delete: (req, res) => {
     Document.findById(req.params.id)
-    .populate('owner', '_id')
     .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Document not found.' });
-      } else if (req.decoded._id === document.owner._id) {
+      } else if (req.decoded._id == document.owner) {
         document.remove((error) => {
           if (error) {
             res.status(400).send({ error: 'Could not delete document.' });
