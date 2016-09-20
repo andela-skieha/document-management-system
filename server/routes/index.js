@@ -10,6 +10,29 @@ const roles = require('./roles');
 const config = require('../config');
 
 module.exports = (apiRouter) => {
+  apiRouter.post('/users/signup', (req, res) => {
+    const user = new User();
+    user.username = req.body.username;
+    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
+    user.email = req.body.email;
+    user.password = req.body.password;
+
+    user.save((err) => {
+      if (err) {
+        if (err.code === 11000) {
+          res.status(409).send({ message: 'Duplicate user entry.' });
+        } else {
+          res.status(400).send({ message: 'Error creating user.' });
+        }
+      } else {
+        res.status(201).send({
+          message: 'User created successfully.',
+          user,
+        });
+      }
+    });
+  });
+
   apiRouter.post('/users/login', (req, res) => {
     User.findOne({
       username: req.body.username,

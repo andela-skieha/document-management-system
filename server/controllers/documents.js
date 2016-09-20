@@ -82,43 +82,50 @@ module.exports = {
   },
 
   update: (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
+    Document.findById(req.params.id)
+    .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Document not found.' });
-        return;
-      }
-      Object.keys(req.body).forEach((key) => {
-        document[key] = req.body[key];
-      });
+      } else if (req.decoded._id === document.owner) {
+        Object.keys(req.body).forEach((key) => {
+          document[key] = req.body[key];
+        });
 
-      document.save((error) => {
-        if (error) {
-          if (error.code === 11000) {
-            res.status(409).send({ error: 'Duplicate entry.' });
-            return;
+        document.save((error) => {
+          if (error) {
+            if (error.code === 11000) {
+              res.status(409).send({ error: 'Duplicate entry.' });
+              return;
+            }
+          } else if (Object.keys(req.body).length === 0) {
+            res.status(400).send({ error: 'Nothing to update.' });
+          } else {
+            res.status(200).send({ message: 'Document updated successfully.' });
           }
-        } else if (Object.keys(req.body).length === 0) {
-          res.status(400).send({ error: 'Nothing to update.' });
-        } else {
-          res.status(200).send({ message: 'Document updated successfully.' });
-        }
-      });
+        });
+      } else {
+        res.status(403).send({ error: 'Cannot edit document you did not create.' });
+      }
     });
   },
 
   delete: (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
+    Document.findById(req.params.id)
+    .populate('owner', '_id')
+    .exec((err, document) => {
       if (err || document === null) {
         res.status(404).send({ error: 'Document not found.' });
-        return;
+      } else if (req.decoded._id === document.owner._id) {
+        document.remove((error) => {
+          if (error) {
+            res.status(400).send({ error: 'Could not delete document.' });
+          } else {
+            res.status(200).send({ message: 'Document deleted successfully.' });
+          }
+        });
+      } else {
+        res.status(403).send({ error: 'Cannot delete document you did not create.' });
       }
-      document.remove((error) => {
-        if (error) {
-          res.status(400).send({ error: 'Could not delete document.' });
-        } else {
-          res.status(200).send({ message: 'Document deleted successfully.' });
-        }
-      });
     });
   },
 };

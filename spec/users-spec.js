@@ -24,8 +24,7 @@ describe('User routes', () => {
 
   it('creates new users', (done) => {
     request
-    .post('/api/users')
-    .set('x-access-token', token)
+    .post('/api/users/signup')
     .send({
       username: 'goldilocks',
       firstname: 'Goldy',
@@ -59,8 +58,7 @@ describe('User routes', () => {
 
   it('does not create duplicate user entries', (done) => {
     request
-    .post('/api/users')
-    .set('x-access-token', token)
+    .post('/api/users/signup')
     .send({
       username: 'maybesydney',
       firstname: 'Goldy',
@@ -77,8 +75,7 @@ describe('User routes', () => {
 
   it('does not create users with missing params', (done) => {
     request
-    .post('/api/users')
-    .set('x-access-token', token)
+    .post('/api/users/signup')
     .send({
       firstname: 'Goldy',
       lastname: 'Locks',

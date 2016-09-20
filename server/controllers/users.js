@@ -5,29 +5,6 @@ const User = require('../models/user');
 const Document = require('../models/document');
 
 module.exports = {
-  create: (req, res) => {
-    const user = new User();
-    user.username = req.body.username;
-    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
-    user.email = req.body.email;
-    user.password = req.body.password;
-
-    user.save((err) => {
-      if (err) {
-        if (err.code === 11000) {
-          res.status(409).send({ message: 'Duplicate user entry.' });
-        } else {
-          res.status(400).send({ message: 'Error creating user.' });
-        }
-      } else {
-        res.status(201).send({
-          message: 'User created successfully.',
-          user,
-        });
-      }
-    });
-  },
-
   all: (req, res) => {
     User.find({}, (err, users) => {
       if (err) {
@@ -54,26 +31,28 @@ module.exports = {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
-        return;
-      }
-      if (req.body.username) user.username = req.body.username;
-      if (req.body.firstname) user.name.firstname = req.body.firstname;
-      if (req.body.lastname) user.name.lastname = req.body.lastname;
-      if (req.body.email) user.email = req.body.email;
-      if (req.body.password) user.password = req.body.password;
+      } else if (req.decoded.id === req.params.user_id) {
+        if (req.body.username) user.username = req.body.username;
+        if (req.body.firstname) user.name.firstname = req.body.firstname;
+        if (req.body.lastname) user.name.lastname = req.body.lastname;
+        if (req.body.email) user.email = req.body.email;
+        if (req.body.password) user.password = req.body.password;
 
-      user.save((error) => {
-        if (error) {
-          if (error.code === 11000) {
-            res.status(409).send({ error: 'Duplicate entry.' });
-            return;
+        user.save((error) => {
+          if (error) {
+            if (error.code === 11000) {
+              res.status(409).send({ error: 'Duplicate entry.' });
+              return;
+            }
+          } else if (Object.keys(req.body).length === 0) {
+            res.status(400).send({ error: 'Nothing to update.' });
+          } else {
+            res.status(200).send({ message: 'User updated successfully.' });
           }
-        } else if (Object.keys(req.body).length === 0) {
-          res.status(400).send({ error: 'Nothing to update.' });
-        } else {
-          res.status(200).send({ message: 'User updated successfully.' });
-        }
-      });
+        });
+      } else {
+        res.status(403).send({ error: 'Cannot update another user\'s details' });
+      }
     });
   },
 
@@ -81,15 +60,17 @@ module.exports = {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
-        return;
+      } else if (req.decoded.id === req.params.user_id) {
+        user.remove((error) => {
+          if (error) {
+            res.status(400).send({ error: 'Could not delete user.' });
+          } else {
+            res.status(200).send({ message: 'User deleted successfully.' });
+          }
+        });
+      } else {
+        res.status(403).send({ error: 'Cannot delete another user.' });
       }
-      user.remove((error) => {
-        if (error) {
-          res.status(400).send({ error: 'Could not delete user.' });
-        } else {
-          res.status(200).send({ message: 'User deleted successfully.' });
-        }
-      });
     });
   },
 
