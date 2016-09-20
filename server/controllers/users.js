@@ -22,7 +22,7 @@ module.exports = {
   find: (req, res) => {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
-        res.status(404).send({ error: 'Could not fetch user.' });
+        res.status(404).send({ error: 'User does not exist.' });
       } else {
         res.status(200).send(user);
       }
@@ -63,11 +63,23 @@ module.exports = {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
       } else if (req.decoded._id == req.params.user_id) {
-        user.remove((error) => {
+        Document.remove({ owner: req.params.user_id }, (error) => {
           if (error) {
             res.status(400).send({ error: 'Could not delete user.' });
           } else {
-            res.status(200).send({ message: 'User deleted successfully.' });
+            Role.remove({ owner: req.params.user_id }, (error2) => {
+              if (error2) {
+                res.status(400).send({ error: 'Could not delete user.' });
+              } else {
+                user.remove((error3) => {
+                  if (error3) {
+                    res.status(400).send({ error: 'Could not delete user.' });
+                  } else {
+                    res.status(200).send({ message: 'User deleted successfully.' });
+                  }
+                });
+              }
+            });
           }
         });
       } else {

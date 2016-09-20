@@ -2,8 +2,11 @@
 /* eslint-disable no-underscore-dangle */
 
 const User = require('../server/models/user');
+const Role = require('../server/models/role');
+const Document = require('../server/models/document');
 const app = require('../index');
 const request = require('supertest')(app);
+const sinon = require('sinon');
 
 describe('User routes', () => {
   let token;
@@ -39,6 +42,21 @@ describe('User routes', () => {
     done();
   });
 
+  it('Returns correct response if there is error getting users', (done) => {
+    sinon.stub(User, 'find', (params, cb) => {
+      cb({ error: 'error fetching users' });
+    });
+    request
+    .get('/api/users')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not fetch users.');
+      done();
+      User.find.restore();
+    });
+  });
+
   it('gets all users when requested', (done) => {
     request
     .get('/api/users')
@@ -69,7 +87,7 @@ describe('User routes', () => {
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(404);
-      expect(res.body.error).toBe('Could not fetch user.');
+      expect(res.body.error).toBe('User does not exist.');
       done();
     });
   });
@@ -143,6 +161,36 @@ describe('User routes', () => {
     });
   });
 
+  it('Returns correct response if there is an error deleting documents of deleted user', (done) => {
+    sinon.stub(Document, 'remove', (params, cb) => {
+      cb({ error: 'error deleting document' });
+    });
+    request
+    .delete(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not delete user.');
+      Document.remove.restore();
+      done();
+    });
+  });
+
+  it('Returns correct response if there is an error deleting roles of deleted user', (done) => {
+    sinon.stub(Role, 'remove', (params, cb) => {
+      cb({ error: 'error deleting role' });
+    });
+    request
+    .delete(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not delete user.');
+      Role.remove.restore();
+      done();
+    });
+  });
+
   it('Deletes a user by id', (done) => {
     request
     .delete(`/api/users/${userId}`)
@@ -174,6 +222,21 @@ describe('User routes', () => {
       expect(res.status).toBe(403);
       expect(res.body.error).toBe('Cannot delete another user.');
       done();
+    });
+  });
+
+  it('Returns correct response if there is error getting documents belonging to user', (done) => {
+    sinon.stub(Document, 'find', (params, cb) => {
+      cb({ error: 'error fetching document' });
+    });
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not fetch documents.');
+      done();
+      Document.find.restore();
     });
   });
 
@@ -211,7 +274,22 @@ describe('User routes', () => {
     });
   });
 
-  it('Gets roles belongong to a specific user', (done) => {
+  it('Returns correct response if there is an error getting roles belonging to user', (done) => {
+    sinon.stub(Role, 'find', (params, cb) => {
+      cb({ error: 'error fetching role' });
+    });
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/roles')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not fetch roles.');
+      done();
+      Role.find.restore();
+    });
+  });
+
+  it('Gets roles belonging to a specific user', (done) => {
     request
     .get('/api/users/57c96a56cd9ca231483f082c/roles')
     .set('x-access-token', token)
