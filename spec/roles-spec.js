@@ -12,8 +12,8 @@ describe('Role routes', () => {
     request
     .post('/api/users/login')
     .send({
-      username: 'janedoe',
-      password: 'password1',
+      username: 'maybesydney',
+      password: 'password3',
     })
     .end((err, res) => {
       token = res.body.token;
@@ -195,6 +195,20 @@ describe('Role routes', () => {
       .end((err, res) => {
         expect(res.status).toBe(404);
         expect(res.body.error).toBe('Role not found.');
+        done();
+      });
+    });
+
+    it('does not update roles not owned by the logged in user', (done) => {
+      request
+      .put('/api/roles/57d9af115317052f7a16cad1')
+      .set('x-access-token', token)
+      .send({
+        title: 'The Doe-s',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe('Cannot edit role you did not create.');
         done();
       });
     });

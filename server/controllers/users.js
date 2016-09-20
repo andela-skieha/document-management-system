@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable eqeqeq */
 
 const User = require('../models/user');
 const Document = require('../models/document');
@@ -31,7 +32,7 @@ module.exports = {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
-      } else if (req.decoded.id === req.params.user_id) {
+      } else if (req.decoded._id == req.params.user_id) {
         if (req.body.username) user.username = req.body.username;
         if (req.body.firstname) user.name.firstname = req.body.firstname;
         if (req.body.lastname) user.name.lastname = req.body.lastname;
@@ -60,7 +61,7 @@ module.exports = {
     User.findById(req.params.user_id, (err, user) => {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
-      } else if (req.decoded.id === req.params.user_id) {
+      } else if (req.decoded._id == req.params.user_id) {
         user.remove((error) => {
           if (error) {
             res.status(400).send({ error: 'Could not delete user.' });

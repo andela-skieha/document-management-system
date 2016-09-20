@@ -57,6 +57,7 @@ module.exports = (apiRouter) => {
            res.status(200).send({
              message: 'User logged in',
              token: dmsToken,
+             user_id: user._id,
            });
          }
        });

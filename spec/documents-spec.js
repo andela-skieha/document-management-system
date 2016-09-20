@@ -13,8 +13,8 @@ describe('Document routes', () => {
     request
     .post('/api/users/login')
     .send({
-      username: 'janedoe',
-      password: 'password1',
+      username: 'maybesydney',
+      password: 'password3',
     })
     .end((err, res) => {
       token = res.body.token;
@@ -221,6 +221,20 @@ describe('Document routes', () => {
     });
   });
 
+  it('Does not update documents not owned by logged in user', (done) => {
+    request
+    .put('/api/documents/57c975eb2c3d08864b51cd0a')
+    .set('x-access-token', token)
+    .send({
+      title: 'Potter Head',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe('Cannot edit document you did not create.');
+      done();
+    });
+  });
+
   it('Deletes a document by id', (done) => {
     request
     .delete(`/api/documents/${documentId}`)
@@ -239,6 +253,17 @@ describe('Document routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Document not found.');
+      done();
+    });
+  });
+
+  it('Does not delete documents not owned by logged in user', (done) => {
+    request
+    .delete('/api/documents/57c975eb2c3d08864b51cd0a')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe('Cannot delete document you did not create.');
       done();
     });
   });
