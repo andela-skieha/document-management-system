@@ -4,6 +4,7 @@
 
 const User = require('../models/user');
 const Document = require('../models/document');
+const Role = require('../models/role');
 
 module.exports = {
   all: (req, res) => {
@@ -88,6 +89,24 @@ module.exports = {
           res.status(404).send({ error: 'No documents found.' });
         } else {
           res.status(200).send(documents);
+        }
+      });
+    });
+  },
+
+  getUserRoles: (req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err || user === null) {
+        res.status(404).send({ error: 'User not found.' });
+        return;
+      }
+      Role.find({ owner: user._id }, (error, roles) => {
+        if (error) {
+          res.status(400).send({ error: 'Could not fetch roles.' });
+        } else if (roles.length === 0) {
+          res.status(404).send({ error: 'No roles found.' });
+        } else {
+          res.status(200).send(roles);
         }
       });
     });

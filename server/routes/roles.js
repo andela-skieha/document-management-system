@@ -7,5 +7,6 @@ module.exports = (router) => {
 
   router.route('/roles/:id')
     .get(Roles.findOne)
-    .put(Roles.updateOne);
+    .put(Roles.updateOne)
+    .delete(Roles.deleteOne);
 };

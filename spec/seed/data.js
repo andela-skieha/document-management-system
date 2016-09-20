@@ -113,7 +113,7 @@ module.exports = {
       members: [
         '57c96a56cd9ca231483f082c',
       ],
-      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f0829'),
+      owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
     },
   ],
 };
