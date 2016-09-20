@@ -213,4 +213,38 @@ describe('Role routes', () => {
       });
     });
   });
+
+
+  it('Deletes a role by id', (done) => {
+    request
+    .delete(`/api/roles/${roleId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Role deleted successfully.');
+      done();
+    });
+  });
+
+  it('Does not delete non-existant roles', (done) => {
+    request
+    .delete('/api/roles/sfr456jgih6hv39y5343')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('Role not found.');
+      done();
+    });
+  });
+
+  it('Does not delete roles not owned by logged in user', (done) => {
+    request
+    .delete('/api/roles/57d9af115317052f7a16cad1')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe('Cannot delete role you did not create.');
+      done();
+    });
+  });
 });

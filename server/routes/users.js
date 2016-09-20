@@ -10,4 +10,5 @@ module.exports = (router) => {
    .delete(Users.delete);
 
   router.get('/users/:user_id/documents', Users.getUserDocuments);
+  router.get('/users/:user_id/roles', Users.getUserRoles);
 };

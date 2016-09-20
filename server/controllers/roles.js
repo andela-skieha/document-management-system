@@ -97,4 +97,23 @@ module.exports = {
       }
     });
   },
+
+  deleteOne: (req, res) => {
+    Role.findById(req.params.id)
+    .exec((err, role) => {
+      if (err || role === null) {
+        res.status(404).send({ error: 'Role not found.' });
+      } else if (req.decoded._id == role.owner) {
+        role.remove((error) => {
+          if (error) {
+            res.status(400).send({ error: 'Could not delete role.' });
+          } else {
+            res.status(200).send({ message: 'Role deleted successfully.' });
+          }
+        });
+      } else {
+        res.status(403).send({ error: 'Cannot delete role you did not create.' });
+      }
+    });
+  },
 };
