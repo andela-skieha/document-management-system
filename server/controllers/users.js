@@ -2,15 +2,75 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable eqeqeq */
 
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt-nodejs');
+
 const User = require('../models/user');
 const Document = require('../models/document');
 const Role = require('../models/role');
+const config = require('../config');
 
 module.exports = {
+
+  signup: (req, res) => {
+    const user = new User();
+    user.username = req.body.username;
+    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
+    user.email = req.body.email;
+    user.password = req.body.password;
+
+    user.save((err) => {
+      if (err) {
+        if (err.code === 11000) {
+          res.status(409).send({ message: 'Duplicate user entry.' });
+        } else {
+          res.status(400).send({ message: 'Error creating user.' });
+        }
+      } else {
+        res.status(201).send({
+          message: 'User created successfully.',
+          user,
+        });
+      }
+    });
+  },
+
+  login: (req, res) => {
+    User.findOne({
+      username: req.body.username,
+    })
+   .select('username password')
+   .exec((err, user) => {
+     if (err) throw err;
+
+     if (!user) {
+       res.status(404).send({ error: 'User not found.' });
+     } else if (user) {
+       bcrypt.compare(req.body.password, user.password, (error, result) => {
+         if (result !== true) {
+           res.status(403).send({ error: 'Wrong password supplied' });
+         } else {
+           const userData = {
+             _id: user._id,
+             email: user.email,
+           };
+           const dmsToken = jwt.sign(userData, config.secret, { expiresIn: 86400 });
+
+           res.status(200).send({
+             message: 'User logged in',
+             token: dmsToken,
+             user_id: user._id,
+           });
+         }
+       });
+     }
+   });
+  },
+
   all: (req, res) => {
     User.find({}, (err, users) => {
       if (err) {
-        res.status(400).send({ error: 'Could not fetch users.' });
+        res.status(500).send({ error: 'Could not fetch users.' });
       } else if (users.length === 0) {
         res.status(404).send({ error: 'No users to retrieve.' });
       } else {
@@ -63,16 +123,16 @@ module.exports = {
       if (err || user === null) {
         res.status(404).send({ error: 'User not found.' });
       } else if (req.decoded._id == req.params.user_id) {
-        Document.remove({ owner: req.params.user_id }, (error) => {
-          if (error) {
+        Document.remove({ owner: req.params.user_id }, (docError) => {
+          if (docError) {
             res.status(400).send({ error: 'Could not delete user.' });
           } else {
-            Role.remove({ owner: req.params.user_id }, (error2) => {
-              if (error2) {
+            Role.remove({ owner: req.params.user_id }, (roleError) => {
+              if (roleError) {
                 res.status(400).send({ error: 'Could not delete user.' });
               } else {
-                user.remove((error3) => {
-                  if (error3) {
+                user.remove((userError) => {
+                  if (userError) {
                     res.status(400).send({ error: 'Could not delete user.' });
                   } else {
                     res.status(200).send({ message: 'User deleted successfully.' });

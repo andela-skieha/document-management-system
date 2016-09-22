@@ -87,12 +87,12 @@ describe('Document routes', () => {
     })
     .end((err, res) => {
       expect(res.status).toBe(409);
-      expect(res.body.error).toBe('Duplicate entry.');
+      expect(res.body.error).toBe('Duplicate entry: Title already exists.');
       done();
     });
   });
 
-  it('Does not create documents with missing params', (done) => {
+  it('Does not create documents with missing title field', (done) => {
     request
     .post('/api/documents')
     .set('x-access-token', token)
@@ -101,7 +101,21 @@ describe('Document routes', () => {
     })
     .end((err, res) => {
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Error creating document.');
+      expect(res.body.error).toBe('Error creating document: Path `title` is required.');
+      done();
+    });
+  });
+
+  it('Does not create documents with missing content field', (done) => {
+    request
+    .post('/api/documents')
+    .set('x-access-token', token)
+    .send({
+      title: 'Turning tables',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Error creating document: Path `content` is required.');
       done();
     });
   });
@@ -190,7 +204,7 @@ describe('Document routes', () => {
     })
     .end((err, res) => {
       expect(res.status).toBe(409);
-      expect(res.body.error).toBe('Duplicate entry.');
+      expect(res.body.error).toBe('Duplicate entry: Title already exists.');
       done();
     });
   });

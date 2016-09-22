@@ -1,6 +1,12 @@
 const Users = require('../controllers/users');
+const Auth = require('../controllers/auth');
 
 module.exports = (router) => {
+  router.post('/users/signup', Users.signup);
+  router.post('/users/login', Users.login);
+
+  router.use(Auth.auth);
+
   router.route('/users')
     .get(Users.all);
 

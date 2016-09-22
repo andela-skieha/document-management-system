@@ -54,7 +54,7 @@ describe('Role routes', () => {
     })
     .end((err, res) => {
       expect(res.status).toBe(409);
-      expect(res.body.error).toBe('Duplicate entry.');
+      expect(res.body.error).toBe('Duplicate entry: Title already exists.');
       done();
     });
   });

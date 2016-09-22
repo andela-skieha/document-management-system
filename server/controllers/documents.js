@@ -13,11 +13,14 @@ module.exports = {
     document.owner = req.decoded._id;
 
     document.save((err) => {
+      let error;
       if (err) {
         if (err.code === 11000) {
-          res.status(409).send({ error: 'Duplicate entry.' });
+          res.status(409).send({ error: 'Duplicate entry: Title already exists.' });
         } else {
-          res.status(400).send({ error: 'Error creating document.' });
+          if (!req.body.title) error = err.errors.title.message;
+          if (!req.body.content) error = err.errors.content.message;
+          res.status(400).send({ error: `Error creating document: ${error}` });
         }
       } else {
         res.status(201).send({
@@ -88,6 +91,11 @@ module.exports = {
       if (err || document === null) {
         res.status(404).send({ error: 'Document not found.' });
       } else if (req.decoded._id == document.owner) {
+        if (Object.keys(req.body).length === 0) {
+          res.status(400).send({ error: 'Nothing to update.' });
+          return;
+        }
+
         Object.keys(req.body).forEach((key) => {
           document[key] = req.body[key];
         });
@@ -95,11 +103,9 @@ module.exports = {
         document.save((error) => {
           if (error) {
             if (error.code === 11000) {
-              res.status(409).send({ error: 'Duplicate entry.' });
+              res.status(409).send({ error: 'Duplicate entry: Title already exists.' });
               return;
             }
-          } else if (Object.keys(req.body).length === 0) {
-            res.status(400).send({ error: 'Nothing to update.' });
           } else {
             res.status(200).send({ message: 'Document updated successfully.' });
           }
