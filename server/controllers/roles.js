@@ -15,7 +15,7 @@ module.exports = {
     role.save((err) => {
       if (err) {
         if (err.code === 11000) {
-          res.status(409).send({ error: 'Duplicate entry.' });
+          res.status(409).send({ error: 'Duplicate entry: Title already exists.' });
         } else {
           res.status(400).send({ error: 'Error creating role.' });
         }
@@ -62,6 +62,11 @@ module.exports = {
       if (err || role === null) {
         res.status(404).send({ error: 'Role not found.' });
       } else if (req.decoded._id == role.owner) {
+        if (Object.keys(req.body).length === 0) {
+          res.status(400).send({ error: 'Nothing to update.' });
+          return;
+        }
+
         if (req.body.title) role.title = req.body.title;
 
         if (req.body.addMembers) {
@@ -86,8 +91,6 @@ module.exports = {
               res.status(409).send({ error: 'Duplicate entry.' });
               return;
             }
-          } else if (Object.keys(req.body).length === 0) {
-            res.status(400).send({ error: 'Nothing to update.' });
           } else {
             res.status(200).send({ message: 'Role updated successfully.' });
           }
