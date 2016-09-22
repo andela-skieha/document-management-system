@@ -50,7 +50,7 @@ describe('User routes', () => {
     .get('/api/users')
     .set('x-access-token', token)
     .end((err, res) => {
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(500);
       expect(res.body.error).toBe('Could not fetch users.');
       done();
       User.find.restore();
