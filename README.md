@@ -26,6 +26,14 @@ Goldocs is a document management system API built out in Javascript. It allows t
 
 * Run `npm install` to install the project's dependencies.
 
+* Create a `.env` file in the root of the project and set the environment variables needed to run the project:
+
+```
+MONGO_PROD_URL=mongodb://localhost/dms
+MONGO_TEST_URL=mongodb://localhost/dms-test
+MONGO_SECRET='this is super secret'
+```
+
 * Run `npm start` to get the server running.
 
 ## Tests
