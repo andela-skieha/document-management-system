@@ -1,5 +1,4 @@
 const Documents = require('../controllers/documents');
-const Search = require('../controllers/search');
 const Auth = require('../controllers/auth');
 
 module.exports = (router) => {
@@ -13,7 +12,4 @@ module.exports = (router) => {
     .get(Documents.find)
     .put(Documents.update)
     .delete(Documents.delete);
-
-  router.route('/search')
-    .get(Search.search);
 };
