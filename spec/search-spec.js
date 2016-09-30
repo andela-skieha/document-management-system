@@ -32,6 +32,19 @@ describe('Search route', () => {
       });
   });
 
+  it('Searches for documents by creation date when given a limit', (done) => {
+    request
+      .get('/api/documents?date=2016-09-01&limit=1')
+      .set('x-access-token', token)
+      .end((err, res) => {
+        expect(res.status).toBe(200);
+        expect(res.body).toBeDefined();
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBe(1);
+        done();
+      });
+  });
+
   it('Returns an error message if documents are not found', (done) => {
     request
       .get('/api/documents?date=2015-09-01')
@@ -45,7 +58,7 @@ describe('Search route', () => {
 
   it('Searches for documents by role', (done) => {
     request
-      .get('/api/documents?role=The Doe-s')
+      .get('/api/documents?role=The Doe-s&limit=1')
       .set('x-access-token', token)
       .end((err, res) => {
         expect(res.status).toBe(200);
