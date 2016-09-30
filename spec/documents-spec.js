@@ -35,7 +35,6 @@ describe('Document routes', () => {
         expect(res.status).toBe(201);
         expect(res.body.message).toBe('Document created successfully.');
         expect(res.body.document).toBeDefined();
-        expect(res.body.document).toBeDefined();
         done();
       });
   });
@@ -141,6 +140,19 @@ describe('Document routes', () => {
         expect(res.status).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body.length).not.toBeGreaterThan(4);
+        done();
+      });
+  });
+
+  it('Gets documents based on specified offset', (done) => {
+    request
+      .get('/api/documents?offset=1&limit=1')
+      .set('x-access-token', token)
+      .end((err, res) => {
+        expect(res.status).toBe(200);
+        expect(res.body).toBeDefined();
+        expect(res.body.length).toBe(1);
+        expect(res.body[0].title).toBe('Fugees');
         done();
       });
   });

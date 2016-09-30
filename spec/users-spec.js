@@ -27,8 +27,8 @@ describe('User routes', () => {
   });
 
   it('checks if new users are unique', (done) => {
-    const username = User.schema.paths.username;
-    const email = User.schema.paths.email;
+    const username = User.schema.path('username');
+    const email = User.schema.path('email');
     expect(username.options.unique).toBe(true);
     expect(email.options.unique).toBe(true);
     done();
@@ -39,6 +39,12 @@ describe('User routes', () => {
     const lastname = User.schema.path('name.lastname');
     expect(firstname.options.required).toBe(true);
     expect(lastname.options.required).toBe(true);
+    done();
+  });
+
+  it('checks if new users have roles defined', (done) => {
+    const role = User.schema.path('role');
+    expect(role.options.default).toBe('user');
     done();
   });
 
