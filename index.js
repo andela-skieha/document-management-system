@@ -5,12 +5,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./server/routes');
+const config = require('./server/config');
 
 const app = express();
 const apiRouter = express.Router();
-const port = process.env.PORT || 5000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api', routes(apiRouter));
 
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect('mongodb://localhost/dms', (err) => {
+mongoose.connect(config.database, (err) => {
   if (err) {
     console.log('connection error', err);
   } else {
@@ -29,10 +29,12 @@ mongoose.connect('mongodb://localhost/dms', (err) => {
   }
 });
 
-app.listen(port, (err) => {
+app.listen(config.port, (err) => {
   if (err) {
     console.log('Connection error', err);
   } else {
-    console.log('Listening on port:', port);
+    console.log('Listening on port:', config.port);
   }
 });
+
+module.exports = app;
