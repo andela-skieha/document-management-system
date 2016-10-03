@@ -1,12 +1,14 @@
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
 
 const User = require('../models/user');
+const Document = require('../models/document');
 
 module.exports = {
   create: (req, res) => {
     const user = new User();
     user.username = req.body.username;
-    user.name = { first: req.body.first, last: req.body.last };
+    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
     user.email = req.body.email;
     user.password = req.body.password;
 
@@ -52,8 +54,8 @@ module.exports = {
         return;
       }
       if (req.body.username) user.username = req.body.username;
-      if (req.body.first) user.name.first = req.body.first;
-      if (req.body.last) user.name.last = req.body.last;
+      if (req.body.firstname) user.name.firstname = req.body.firstname;
+      if (req.body.lastname) user.name.lastname = req.body.lastname;
       if (req.body.email) user.email = req.body.email;
       if (req.body.password) user.password = req.body.password;
 
@@ -82,6 +84,24 @@ module.exports = {
           res.status(400).send({ error: 'Could not delete user.' });
         } else {
           res.send({ message: 'User deleted successfully.' });
+        }
+      });
+    });
+  },
+
+  getUserDocuments: (req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err || user === null) {
+        res.status(404).send({ error: 'User not found.' });
+        return;
+      }
+      Document.find({ owner: user._id }, (error, documents) => {
+        if (error) {
+          res.status(400).send({ error: 'Could not fetch documents.' });
+        } else if (documents.length === 0) {
+          res.status(404).send({ error: 'No documents found.' });
+        } else {
+          res.json(documents);
         }
       });
     });
