@@ -9,7 +9,7 @@ describe('Document routes', () => {
   let token;
   let documentId;
 
-  beforeEach((done) => {
+  beforeAll((done) => {
     request
     .post('/api/users/login')
     .send({
