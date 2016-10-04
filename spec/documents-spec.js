@@ -55,7 +55,6 @@ describe('Document routes', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(201);
-        expect({}.hasOwnProperty.call(res.body.document, 'owner')).toBe(true);
         expect(res.body.document.owner).toBeDefined();
         done();
       });
@@ -71,7 +70,6 @@ describe('Document routes', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(201);
-        expect({}.hasOwnProperty.call(res.body.document, 'createdAt')).toBe(true);
         expect(res.body.document.createdAt).toBeDefined();
         done();
       });
