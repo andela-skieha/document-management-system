@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 
 const express = require('express');
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./server/routes');
@@ -16,6 +17,7 @@ if (env === 'test') {
   config.port = 8080;
 }
 
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api', routes(apiRouter));

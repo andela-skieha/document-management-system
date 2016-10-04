@@ -2,14 +2,17 @@
 /* eslint-disable no-underscore-dangle */
 
 const User = require('../server/models/user');
+const Role = require('../server/models/role');
+const Document = require('../server/models/document');
 const app = require('../index');
 const request = require('supertest')(app);
+const sinon = require('sinon');
 
 describe('User routes', () => {
   let token;
   let userId;
 
-  beforeEach((done) => {
+  beforeAll((done) => {
     request
     .post('/api/users/login')
     .send({
@@ -18,25 +21,7 @@ describe('User routes', () => {
     })
     .end((err, res) => {
       token = res.body.token;
-      done();
-    });
-  });
-
-  it('creates new users', (done) => {
-    request
-    .post('/api/users')
-    .set('x-access-token', token)
-    .send({
-      username: 'goldilocks',
-      firstname: 'Goldy',
-      lastname: 'Locks',
-      email: 'goldy@locks.com',
-      password: 'locksywocksy',
-    })
-    .end((err, res) => {
-      userId = res.body.user._id;
-      expect(res.status).toBe(201);
-      expect(res.body.message).toBe('User created successfully.');
+      userId = res.body.user_id;
       done();
     });
   });
@@ -57,36 +42,18 @@ describe('User routes', () => {
     done();
   });
 
-  it('does not create duplicate user entries', (done) => {
-    request
-    .post('/api/users')
-    .set('x-access-token', token)
-    .send({
-      username: 'maybesydney',
-      firstname: 'Goldy',
-      lastname: 'Locks',
-      email: 'goldy@locksy.com',
-      password: 'locksywocksy',
-    })
-    .end((err, res) => {
-      expect(res.status).toBe(409);
-      expect(res.body.message).toBe('Duplicate user entry.');
-      done();
+  it('Returns correct response if there is error getting users', (done) => {
+    sinon.stub(User, 'find', (params, cb) => {
+      cb({ error: 'error fetching users' });
     });
-  });
-
-  it('does not create users with missing params', (done) => {
     request
-    .post('/api/users')
+    .get('/api/users')
     .set('x-access-token', token)
-    .send({
-      firstname: 'Goldy',
-      lastname: 'Locks',
-    })
     .end((err, res) => {
       expect(res.status).toBe(400);
-      expect(res.body.message).toBe('Error creating user.');
+      expect(res.body.error).toBe('Could not fetch users.');
       done();
+      User.find.restore();
     });
   });
 
@@ -104,7 +71,7 @@ describe('User routes', () => {
 
   it('finds users by their ids', (done) => {
     request
-    .get(`/api/users/${userId}`)
+    .get('/api/users/57c96a56cd9ca231483f0829')
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(200);
@@ -120,12 +87,12 @@ describe('User routes', () => {
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(404);
-      expect(res.body.error).toBe('Could not fetch user.');
+      expect(res.body.error).toBe('User does not exist.');
       done();
     });
   });
 
-  it('updates user details', (done) => {
+  it('updates logged-in-user details', (done) => {
     request
     .put(`/api/users/${userId}`)
     .set('x-access-token', token)
@@ -182,6 +149,48 @@ describe('User routes', () => {
     });
   });
 
+  it('Does not update other user\'s details', (done) => {
+    request
+    .put('/api/users/57c96a56cd9ca231483f0829')
+    .set('x-access-token', token)
+    .send({})
+    .end((err, res) => {
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe('Cannot update another user\'s details');
+      done();
+    });
+  });
+
+  it('Returns correct response if there is an error deleting documents of deleted user', (done) => {
+    sinon.stub(Document, 'remove', (params, cb) => {
+      cb({ error: 'error deleting document' });
+    });
+    request
+    .delete(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not delete user.');
+      Document.remove.restore();
+      done();
+    });
+  });
+
+  it('Returns correct response if there is an error deleting roles of deleted user', (done) => {
+    sinon.stub(Role, 'remove', (params, cb) => {
+      cb({ error: 'error deleting role' });
+    });
+    request
+    .delete(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not delete user.');
+      Role.remove.restore();
+      done();
+    });
+  });
+
   it('Deletes a user by id', (done) => {
     request
     .delete(`/api/users/${userId}`)
@@ -201,6 +210,33 @@ describe('User routes', () => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('User not found.');
       done();
+    });
+  });
+
+  it('Does not delete another user', (done) => {
+    request
+    .delete('/api/users/57c96a56cd9ca231483f0829')
+    .set('x-access-token', token)
+    .send({})
+    .end((err, res) => {
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe('Cannot delete another user.');
+      done();
+    });
+  });
+
+  it('Returns correct response if there is error getting documents belonging to user', (done) => {
+    sinon.stub(Document, 'find', (params, cb) => {
+      cb({ error: 'error fetching document' });
+    });
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not fetch documents.');
+      done();
+      Document.find.restore();
     });
   });
 
@@ -234,6 +270,55 @@ describe('User routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('No documents found.');
+      done();
+    });
+  });
+
+  it('Returns correct response if there is an error getting roles belonging to user', (done) => {
+    sinon.stub(Role, 'find', (params, cb) => {
+      cb({ error: 'error fetching role' });
+    });
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/roles')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Could not fetch roles.');
+      done();
+      Role.find.restore();
+    });
+  });
+
+  it('Gets roles belonging to a specific user', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f082c/roles')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(Array.isArray(res.body)).toBe(true);
+      done();
+    });
+  });
+
+  it('Throws error for a non-existant user', (done) => {
+    request
+    .get(`/api/users/${userId}/roles`)
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('User not found.');
+      done();
+    });
+  });
+
+  it('Returns "not found" for users with no roles', (done) => {
+    request
+    .get('/api/users/57c96a56cd9ca231483f0829/roles')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      expect(res.status).toBe(404);
+      expect(res.body.error).toBe('No roles found.');
       done();
     });
   });

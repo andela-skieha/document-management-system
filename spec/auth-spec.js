@@ -4,6 +4,54 @@ const app = require('../index');
 const request = require('supertest')(app);
 
 describe('User Authentication', () => {
+  it('creates new users', (done) => {
+    request
+    .post('/api/users/signup')
+    .send({
+      username: 'goldilocks',
+      firstname: 'Goldy',
+      lastname: 'Locks',
+      email: 'goldy@locks.com',
+      password: 'locksywocksy',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(201);
+      expect(res.body.message).toBe('User created successfully.');
+      done();
+    });
+  });
+
+  it('does not create duplicate user entries', (done) => {
+    request
+    .post('/api/users/signup')
+    .send({
+      username: 'maybesydney',
+      firstname: 'Goldy',
+      lastname: 'Locks',
+      email: 'goldy@locksy.com',
+      password: 'locksywocksy',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(409);
+      expect(res.body.message).toBe('Duplicate user entry.');
+      done();
+    });
+  });
+
+  it('does not create users with missing params', (done) => {
+    request
+    .post('/api/users/signup')
+    .send({
+      firstname: 'Goldy',
+      lastname: 'Locks',
+    })
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe('Error creating user.');
+      done();
+    });
+  });
+
   it('logs in a user and provides them with a token', (done) => {
     request
     .post('/api/users/login')
@@ -51,7 +99,7 @@ describe('User Authentication', () => {
     request
     .get('/api/users')
     .end((err, res) => {
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(401);
       expect(res.body.message).toBe('You are not authenticated.');
       done();
     });

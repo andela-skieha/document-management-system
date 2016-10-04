@@ -6,9 +6,33 @@ const bcrypt = require('bcrypt-nodejs');
 const User = require('../models/user');
 const users = require('./users');
 const documents = require('./documents');
+const roles = require('./roles');
 const config = require('../config');
 
 module.exports = (apiRouter) => {
+  apiRouter.post('/users/signup', (req, res) => {
+    const user = new User();
+    user.username = req.body.username;
+    user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
+    user.email = req.body.email;
+    user.password = req.body.password;
+
+    user.save((err) => {
+      if (err) {
+        if (err.code === 11000) {
+          res.status(409).send({ message: 'Duplicate user entry.' });
+        } else {
+          res.status(400).send({ message: 'Error creating user.' });
+        }
+      } else {
+        res.status(201).send({
+          message: 'User created successfully.',
+          user,
+        });
+      }
+    });
+  });
+
   apiRouter.post('/users/login', (req, res) => {
     User.findOne({
       username: req.body.username,
@@ -33,6 +57,7 @@ module.exports = (apiRouter) => {
            res.status(200).send({
              message: 'User logged in',
              token: dmsToken,
+             user_id: user._id,
            });
          }
        });
@@ -52,12 +77,13 @@ module.exports = (apiRouter) => {
         }
       });
     } else {
-      res.status(403).send({ message: 'You are not authenticated.' });
+      res.status(401).send({ message: 'You are not authenticated.' });
     }
   });
 
   users(apiRouter);
   documents(apiRouter);
+  roles(apiRouter);
 
   return apiRouter;
 };
