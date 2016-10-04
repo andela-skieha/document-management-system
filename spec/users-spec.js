@@ -1,6 +1,7 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 /* eslint-disable no-underscore-dangle */
 
+const User = require('../server/models/user');
 const app = require('../index');
 const request = require('supertest')(app);
 
@@ -38,6 +39,22 @@ describe('User routes', () => {
       expect(res.body.message).toBe('User created successfully.');
       done();
     });
+  });
+
+  it('checks if new users are unique', (done) => {
+    const username = User.schema.paths.username;
+    const email = User.schema.paths.email;
+    expect(username.options.unique).toBe(true);
+    expect(email.options.unique).toBe(true);
+    done();
+  });
+
+  it('checks if new users have first/lastname properties', (done) => {
+    const firstname = User.schema.path('name.firstname');
+    const lastname = User.schema.path('name.lastname');
+    expect(firstname.options.required).toBe(true);
+    expect(lastname.options.required).toBe(true);
+    done();
   });
 
   it('does not create duplicate user entries', (done) => {
@@ -87,7 +104,7 @@ describe('User routes', () => {
 
   it('finds users by their ids', (done) => {
     request
-    .get('/api/users/57c96a56cd9ca231483f082c')
+    .get(`/api/users/${userId}`)
     .set('x-access-token', token)
     .end((err, res) => {
       expect(res.status).toBe(200);
@@ -110,7 +127,7 @@ describe('User routes', () => {
 
   it('updates user details', (done) => {
     request
-    .put('/api/users/57c96a56cd9ca231483f082b')
+    .put(`/api/users/${userId}`)
     .set('x-access-token', token)
     .send({
       firstname: 'Jennifer',
@@ -125,11 +142,12 @@ describe('User routes', () => {
 
   it('Rejects duplicate usernames and emails', (done) => {
     request
-    .put('/api/users/57c96a56cd9ca231483f082b')
+    .put(`/api/users/${userId}`)
     .set('x-access-token', token)
     .send({
       username: 'maybesydney',
       email: 'sydney@maybe.com',
+      password: 'jhene',
     })
     .end((err, res) => {
       expect(res.status).toBe(409);
@@ -148,6 +166,18 @@ describe('User routes', () => {
     .end((err, res) => {
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('User not found.');
+      done();
+    });
+  });
+
+  it('Does not update users if no data is provided', (done) => {
+    request
+    .put(`/api/users/${userId}`)
+    .set('x-access-token', token)
+    .send({})
+    .end((err, res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Nothing to update.');
       done();
     });
   });
