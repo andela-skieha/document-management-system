@@ -48,7 +48,6 @@ module.exports = {
             res.status(404).send({ error: 'No documents to retrieve.' });
           } else {
             res.status(200).send(documents);
-            // console.log(documents.length);
           }
         });
     };

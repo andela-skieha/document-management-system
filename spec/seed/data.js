@@ -93,6 +93,7 @@ module.exports = {
       content: 'You Doe-s need to get real names',
       owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
       role: mongoose.Types.ObjectId('57d990a37f43cea7757befc0'),
+      createdAt: new Date('September 2, 2016 03:24:00'),
     },
   ],
 

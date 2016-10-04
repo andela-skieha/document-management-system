@@ -58,7 +58,7 @@ describe('Search route', () => {
 
   it('Searches for documents by role', (done) => {
     request
-      .get('/api/documents?role=The Doe-s&limit=1')
+      .get('/api/documents?role=The Doe-s&limit=1&date=2016-09-02')
       .set('x-access-token', token)
       .end((err, res) => {
         expect(res.status).toBe(200);
