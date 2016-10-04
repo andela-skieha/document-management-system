@@ -55,6 +55,7 @@ module.exports = {
       title: 'Harry Potter',
       content: 'The boy who lived',
       owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
+      createdAt: new Date('September 1, 2016 03:24:00'),
     },
 
     {
@@ -62,6 +63,7 @@ module.exports = {
       title: 'Lord of the Rings',
       content: 'Weird magical creatures',
       owner: mongoose.Types.ObjectId('57c96a56cd9ca231483f082c'),
+      createdAt: new Date('September 1, 2016 23:24:00'),
     },
 
     {
