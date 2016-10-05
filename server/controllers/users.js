@@ -18,7 +18,7 @@ module.exports = {
     user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
     user.email = req.body.email;
     user.password = req.body.password;
-    if (req.body.email === process.env.admin_email) {
+    if (req.body.email === process.env.ADMIN_EMAIL) {
       user.role = 'admin';
     }
 
