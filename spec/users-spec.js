@@ -11,6 +11,7 @@ const sinon = require('sinon');
 describe('User routes', () => {
   let token;
   let userId;
+  let adminToken;
 
   beforeAll((done) => {
     request
@@ -53,24 +54,53 @@ describe('User routes', () => {
       cb({ error: 'error fetching users' });
     });
     request
-      .get('/api/users')
-      .set('x-access-token', token)
-      .end((err, res) => {
-        expect(res.status).toBe(500);
-        expect(res.body.error).toBe('Could not fetch users.');
-        done();
-        User.find.restore();
+      .post('/api/users/login')
+      .send({
+        username: 'njerry',
+        password: 'password0',
+      })
+      .end((error, response) => {
+        adminToken = response.body.token;
+        request
+          .get('/api/users')
+          .set('x-access-token', adminToken)
+          .end((err, res) => {
+            expect(res.status).toBe(500);
+            expect(res.body.error).toBe('Could not fetch users.');
+            done();
+            User.find.restore();
+          });
       });
   });
 
-  it('gets all users when requested', (done) => {
+  it('Gets all users when requested by the admin', (done) => {
+    request
+        .post('/api/users/login')
+        .send({
+          username: 'njerry',
+          password: 'password0',
+        })
+        .end((err, res) => {
+          adminToken = res.body.token;
+          request
+            .get('/api/users')
+            .set('x-access-token', adminToken)
+            .end((error, response) => {
+              expect(response.status).toBe(200);
+              expect(response.body).toBeDefined();
+              expect(Array.isArray(response.body)).toBe(true);
+              done();
+            });
+        });
+  });
+
+  it('Cannot get users if user is not admin', (done) => {
     request
       .get('/api/users')
       .set('x-access-token', token)
       .end((err, res) => {
-        expect(res.status).toBe(200);
-        expect(res.body).toBeDefined();
-        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe('You are not authorized to access this resource.');
         done();
       });
   });

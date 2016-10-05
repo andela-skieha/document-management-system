@@ -7,6 +7,7 @@ const request = require('supertest')(app);
 describe('Role routes', () => {
   let token;
   let roleId;
+  let adminToken;
 
   beforeAll((done) => {
     request
@@ -78,14 +79,34 @@ describe('Role routes', () => {
       });
   });
 
-  it('Gets all roles when requested', (done) => {
+  it('Gets all roles when requested by the admin', (done) => {
+    request
+      .post('/api/users/login')
+      .send({
+        username: 'njerry',
+        password: 'password0',
+      })
+      .end((err, res) => {
+        adminToken = res.body.token;
+        request
+          .get('/api/roles')
+          .set('x-access-token', adminToken)
+          .end((error, response) => {
+            expect(response.status).toBe(200);
+            expect(response.body).toBeDefined();
+            expect(Array.isArray(response.body)).toBe(true);
+            done();
+          });
+      });
+  });
+
+  it('Cannot get roles if user is not admin', (done) => {
     request
       .get('/api/roles')
       .set('x-access-token', token)
       .end((err, res) => {
-        expect(res.status).toBe(200);
-        expect(res.body).toBeDefined();
-        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe('You are not authorized to access this resource.');
         done();
       });
   });

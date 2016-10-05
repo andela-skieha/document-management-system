@@ -5,6 +5,18 @@ const mongoose = require('mongoose');
 module.exports = {
   users: [
     {
+      _id: mongoose.Types.ObjectId('57c96a56cd9ac567483f082b'),
+      username: 'njerry',
+      name: {
+        firstname: 'Njeri',
+        lastname: 'Kieha',
+      },
+      email: 'njerry@kieha.com',
+      password: 'password0',
+      role: 'admin',
+    },
+
+    {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
       username: 'janedoe',
       name: {
