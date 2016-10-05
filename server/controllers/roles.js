@@ -29,7 +29,8 @@ module.exports = {
   },
 
   all: (req, res) => {
-    Role
+    if (req.decoded.role === 'admin') {
+      Role
       .find({})
       .populate('owner members', 'username -_id')
       .sort({ createdAt: -1 })
@@ -42,6 +43,9 @@ module.exports = {
           res.status(200).send(roles);
         }
       });
+    } else {
+      res.status(403).send({ error: 'You are not authorized to access this resource.' });
+    }
   },
 
   findOne: (req, res) => {

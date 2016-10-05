@@ -18,18 +18,33 @@ module.exports = {
     user.name = { firstname: req.body.firstname, lastname: req.body.lastname };
     user.email = req.body.email;
     user.password = req.body.password;
+    if (req.body.email === process.env.admin_email) {
+      user.role = 'admin';
+    }
 
     user.save((err) => {
+      let error;
       if (err) {
         if (err.code === 11000) {
-          res.status(409).send({ message: 'Duplicate user entry.' });
+          error = err.message.match(/index:(.*?)_/)[1].trim();
+          res.status(409).send({ message: `Duplicate ${error}.` });
         } else {
-          res.status(400).send({ message: 'Error creating user.' });
+          if (!req.body.username) error = err.errors.username.message;
+          if (!req.body.email) error = err.errors.email.message;
+          if (!req.body.password) error = err.errors.password.message;
+          if (!req.body.firstname) {
+            error = err.errors['name.firstname'].message.replace(/name\./gi, '');
+          }
+          if (!req.body.lastname) {
+            error = err.errors['name.lastname'].message.replace(/name\./gi, '');
+          }
+          res.status(400).send({ message: `Error creating user: ${error}` });
         }
       } else {
         const userData = {
           _id: user._id,
           email: user.email,
+          role: user.role,
         };
         const dmsToken = jwt.sign(userData, config.secret, { expiresIn: 86400 });
 
@@ -47,7 +62,7 @@ module.exports = {
       .findOne({
         username: req.body.username,
       })
-     .select('username password')
+     .select('password email role')
      .exec((err, user) => {
        if (err) throw err;
 
@@ -61,6 +76,7 @@ module.exports = {
              const userData = {
                _id: user._id,
                email: user.email,
+               role: user.role,
              };
              const dmsToken = jwt.sign(userData, config.secret, { expiresIn: 86400 });
 
@@ -76,7 +92,8 @@ module.exports = {
   },
 
   all: (req, res) => {
-    User
+    if (req.decoded.role === 'admin') {
+      User
       .find({}, (err, users) => {
         if (err) {
           res.status(500).send({ error: 'Could not fetch users.' });
@@ -86,6 +103,9 @@ module.exports = {
           res.status(200).send(users);
         }
       });
+    } else {
+      res.status(403).send({ error: 'You are not authorized to access this resource.' });
+    }
   },
 
   find: (req, res) => {
