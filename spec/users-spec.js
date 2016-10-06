@@ -149,7 +149,6 @@ describe('User routes', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.error).toBe('Duplicate username.');
         done();
       });
   });
@@ -163,7 +162,6 @@ describe('User routes', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.error).toBe('Duplicate email.');
         done();
       });
   });
