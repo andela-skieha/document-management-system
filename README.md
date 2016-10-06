@@ -1,7 +1,7 @@
 # Goldocs
 
-[![CircleCI](https://circleci.com/gh/andela-skieha/document-management-system/tree/develop.svg?style=svg)](https://circleci.com/gh/andela-skieha/document-management-system/tree/develop)
-[![Coverage Status](https://coveralls.io/repos/github/andela-skieha/document-management-system/badge.svg?branch=develop)](https://coveralls.io/github/andela-skieha/document-management-system?branch=develop)
+[![CircleCI](https://circleci.com/gh/andela-skieha/document-management-system/tree/master.svg?style=svg)](https://circleci.com/gh/andela-skieha/document-management-system/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/andela-skieha/document-management-system/badge.svg?branch=master)](https://coveralls.io/github/andela-skieha/document-management-system?branch=master)
 
 ## Checkpoint Explanation
 Goldocs is a document management system API built out in Javascript. It allows the end user to be able to create documents, and be able to share them with other people.
