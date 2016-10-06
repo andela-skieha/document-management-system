@@ -11,20 +11,7 @@ const sinon = require('sinon');
 describe('User routes', () => {
   let token;
   let userId;
-
-  beforeAll((done) => {
-    request
-      .post('/api/users/login')
-      .send({
-        username: 'janedoe',
-        password: 'password1',
-      })
-      .end((err, res) => {
-        token = res.body.token;
-        userId = res.body.user_id;
-        done();
-      });
-  });
+  let adminToken;
 
   it('checks if new users are unique', (done) => {
     const username = User.schema.path('username');
@@ -53,25 +40,64 @@ describe('User routes', () => {
       cb({ error: 'error fetching users' });
     });
     request
-      .get('/api/users')
-      .set('x-access-token', token)
-      .end((err, res) => {
-        expect(res.status).toBe(500);
-        expect(res.body.error).toBe('Could not fetch users.');
-        done();
-        User.find.restore();
+      .post('/api/users/login')
+      .send({
+        username: 'njerry',
+        password: 'password0',
+      })
+      .end((error, response) => {
+        adminToken = response.body.token;
+        request
+          .get('/api/users')
+          .set('x-access-token', adminToken)
+          .end((err, res) => {
+            expect(res.status).toBe(500);
+            expect(res.body.error).toBe('Could not fetch users.');
+            done();
+            User.find.restore();
+          });
       });
   });
 
-  it('gets all users when requested', (done) => {
+  it('Gets all users when requested by the admin', (done) => {
     request
-      .get('/api/users')
-      .set('x-access-token', token)
-      .end((err, res) => {
-        expect(res.status).toBe(200);
-        expect(res.body).toBeDefined();
-        expect(Array.isArray(res.body)).toBe(true);
-        done();
+        .post('/api/users/login')
+        .send({
+          username: 'njerry',
+          password: 'password0',
+        })
+        .end((err, res) => {
+          adminToken = res.body.token;
+          request
+            .get('/api/users')
+            .set('x-access-token', adminToken)
+            .end((error, response) => {
+              expect(response.status).toBe(200);
+              expect(response.body).toBeDefined();
+              expect(Array.isArray(response.body)).toBe(true);
+              done();
+            });
+        });
+  });
+
+  it('Cannot get users if user is not admin', (done) => {
+    request
+      .post('/api/users/login')
+      .send({
+        username: 'janedoe',
+        password: 'password1',
+      })
+      .end((error, response) => {
+        token = response.body.token;
+        userId = response.body.user_id;
+        request
+          .get('/api/users')
+          .set('x-access-token', token)
+          .end((err, res) => {
+            expect(res.status).toBe(403);
+            expect(res.body.error).toBe('You are not authorized to access this resource.');
+            done();
+          });
       });
   });
 
@@ -114,18 +140,28 @@ describe('User routes', () => {
       });
   });
 
-  it('Rejects duplicate usernames and emails', (done) => {
+  it('Rejects duplicate usernames', (done) => {
     request
       .put(`/api/users/${userId}`)
       .set('x-access-token', token)
       .send({
         username: 'maybesydney',
-        email: 'sydney@maybe.com',
-        password: 'jhene',
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.error).toBe('Duplicate entry.');
+        done();
+      });
+  });
+
+  it('Rejects duplicate emails', (done) => {
+    request
+      .put(`/api/users/${userId}`)
+      .set('x-access-token', token)
+      .send({
+        email: 'sydney@maybe.com',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(409);
         done();
       });
   });

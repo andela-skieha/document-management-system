@@ -8,11 +8,11 @@ Goldocs is a document management system API built out in Javascript. It allows t
 
 ## Requirements for setup
 
-* node.js version ^6.2.2
+* [node.js version ^6.2.2](https://nodejs.org/en/)
 
-* mongodb
+* [mongodb](http://mongodb.github.io/node-mongodb-native/2.1/)
 
-* Postman
+* [Postman](https://www.getpostman.com/)
 
 ## Usage
 

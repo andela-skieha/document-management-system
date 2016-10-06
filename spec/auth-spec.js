@@ -35,23 +35,90 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.message).toBe('Duplicate user entry.');
         done();
       });
   });
 
-  it('does not create users with missing params', (done) => {
-    request
+  describe('Error on missing params', () => {
+    it('does not create users with missing username', (done) => {
+      request
       .post('/api/users/signup')
       .send({
         firstname: 'Goldy',
         lastname: 'Locks',
+        email: 'goldy@locksy.com',
+        password: 'locksywocksy',
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user.');
+        expect(res.body.error).toBe('Error creating user: Path `username` is required.');
         done();
       });
+    });
+
+    it('does not create users with missing email', (done) => {
+      request
+      .post('/api/users/signup')
+      .send({
+        firstname: 'Goldy',
+        lastname: 'Locks',
+        username: 'goldy@locksy.com',
+        password: 'locksywocksy',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Error creating user: Path `email` is required.');
+        done();
+      });
+    });
+
+    it('does not create users with missing password', (done) => {
+      request
+      .post('/api/users/signup')
+      .send({
+        firstname: 'Goldy',
+        lastname: 'Locks',
+        email: 'goldy@locksy.com',
+        username: 'locksywocksy',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Error creating user: Path `password` is required.');
+        done();
+      });
+    });
+
+    it('does not create users with missing firstname', (done) => {
+      request
+      .post('/api/users/signup')
+      .send({
+        username: 'Goldy',
+        lastname: 'Locks',
+        email: 'goldy@locksy.com',
+        password: 'locksywocksy',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Error creating user: Path `firstname` is required.');
+        done();
+      });
+    });
+
+    it('does not create users with missing lastname', (done) => {
+      request
+      .post('/api/users/signup')
+      .send({
+        firstname: 'Goldy',
+        username: 'Locks',
+        email: 'goldy@locksy.com',
+        password: 'locksywocksy',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Error creating user: Path `lastname` is required.');
+        done();
+      });
+    });
   });
 
   it('logs in a user and provides them with a token', (done) => {
@@ -112,7 +179,7 @@ describe('User Authentication', () => {
       .get('/api/users')
       .set('x-access-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
       .end((err, res) => {
-        expect(res.status).toBe(403);
+        expect(res.status).toBe(401);
         expect(res.body.message).toBe('Failed to authenticate token.');
         done();
       });

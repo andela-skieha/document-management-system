@@ -29,7 +29,8 @@ module.exports = {
   },
 
   all: (req, res) => {
-    Role
+    if (req.decoded.role === 'admin') {
+      Role
       .find({})
       .populate('owner members', 'username -_id')
       .sort({ createdAt: -1 })
@@ -42,6 +43,9 @@ module.exports = {
           res.status(200).send(roles);
         }
       });
+    } else {
+      res.status(403).send({ error: 'You are not authorized to access this resource.' });
+    }
   },
 
   findOne: (req, res) => {
@@ -88,9 +92,10 @@ module.exports = {
 
           role.save((error) => {
             if (error) {
-              if (error.code === 11000) {
+              if (error.code === 11000 || error.code === 11001) {
                 res.status(409).send({ error: 'Duplicate entry.' });
-                return;
+              } else {
+                res.status(500).send({ error });
               }
             } else {
               res.status(200).send({

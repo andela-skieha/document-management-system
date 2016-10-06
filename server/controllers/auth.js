@@ -10,7 +10,7 @@ module.exports = {
     if (dmsToken) {
       jwt.verify(dmsToken, config.secret, (err, decoded) => {
         if (err) {
-          res.status(403).send({ message: 'Failed to authenticate token.' });
+          res.status(401).send({ message: 'Failed to authenticate token.' });
         } else {
           req.decoded = decoded;
           next();

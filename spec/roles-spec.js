@@ -7,37 +7,34 @@ const request = require('supertest')(app);
 describe('Role routes', () => {
   let token;
   let roleId;
+  let adminToken;
 
-  beforeAll((done) => {
+  it('Creates new roles with a unique title', (done) => {
     request
       .post('/api/users/login')
       .send({
         username: 'maybesydney',
         password: 'password3',
       })
-      .end((err, res) => {
-        token = res.body.token;
-        done();
-      });
-  });
-
-  it('Creates new roles with a unique title', (done) => {
-    request
-      .post('/api/roles')
-      .set('x-access-token', token)
-      .send({
-        title: 'Seeders',
-        members: [
-          '57c96a56cd9ca231483f0829',
-          '9e799c0e692b79bdc83f082a',
-        ],
-      })
-      .end((err, res) => {
-        roleId = res.body.role._id;
-        expect(res.status).toBe(201);
-        expect(res.body.message).toBe('Role created successfully.');
-        expect(res.body.role).toBeDefined();
-        done();
+      .end((error, response) => {
+        token = response.body.token;
+        request
+          .post('/api/roles')
+          .set('x-access-token', token)
+          .send({
+            title: 'Seeders',
+            members: [
+              '57c96a56cd9ca231483f0829',
+              '9e799c0e692b79bdc83f082a',
+            ],
+          })
+          .end((err, res) => {
+            roleId = res.body.role._id;
+            expect(res.status).toBe(201);
+            expect(res.body.message).toBe('Role created successfully.');
+            expect(res.body.role).toBeDefined();
+            done();
+          });
       });
   });
 
@@ -78,14 +75,34 @@ describe('Role routes', () => {
       });
   });
 
-  it('Gets all roles when requested', (done) => {
+  it('Gets all roles when requested by the admin', (done) => {
+    request
+      .post('/api/users/login')
+      .send({
+        username: 'njerry',
+        password: 'password0',
+      })
+      .end((err, res) => {
+        adminToken = res.body.token;
+        request
+          .get('/api/roles')
+          .set('x-access-token', adminToken)
+          .end((error, response) => {
+            expect(response.status).toBe(200);
+            expect(response.body).toBeDefined();
+            expect(Array.isArray(response.body)).toBe(true);
+            done();
+          });
+      });
+  });
+
+  it('Cannot get roles if user is not admin', (done) => {
     request
       .get('/api/roles')
       .set('x-access-token', token)
       .end((err, res) => {
-        expect(res.status).toBe(200);
-        expect(res.body).toBeDefined();
-        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe('You are not authorized to access this resource.');
         done();
       });
   });

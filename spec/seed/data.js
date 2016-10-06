@@ -5,6 +5,18 @@ const mongoose = require('mongoose');
 module.exports = {
   users: [
     {
+      _id: mongoose.Types.ObjectId('57c96a56cd9ac567483f082b'),
+      username: 'njerry',
+      name: {
+        firstname: 'Njeri',
+        lastname: 'Kieha',
+      },
+      email: 'njerry@kieha.com',
+      password: 'password0',
+      role: 'admin',
+    },
+
+    {
       _id: mongoose.Types.ObjectId('57c96a56cd9ca231483f082b'),
       username: 'janedoe',
       name: {
@@ -93,6 +105,7 @@ module.exports = {
       content: 'You Doe-s need to get real names',
       owner: mongoose.Types.ObjectId('9e799c0e692b79bdc83f082a'),
       role: mongoose.Types.ObjectId('57d990a37f43cea7757befc0'),
+      createdAt: new Date('September 2, 2016 03:24:00'),
     },
   ],
 
