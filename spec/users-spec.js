@@ -140,18 +140,30 @@ describe('User routes', () => {
       });
   });
 
-  it('Rejects duplicate usernames and emails', (done) => {
+  it('Rejects duplicate usernames', (done) => {
     request
       .put(`/api/users/${userId}`)
       .set('x-access-token', token)
       .send({
         username: 'maybesydney',
-        email: 'sydney@maybe.com',
-        password: 'jhene',
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.error).toBe('Duplicate entry.');
+        expect(res.body.error).toBe('Duplicate username.');
+        done();
+      });
+  });
+
+  it('Rejects duplicate emails', (done) => {
+    request
+      .put(`/api/users/${userId}`)
+      .set('x-access-token', token)
+      .send({
+        email: 'sydney@maybe.com',
+      })
+      .end((err, res) => {
+        expect(res.status).toBe(409);
+        expect(res.body.error).toBe('Duplicate email.');
         done();
       });
   });

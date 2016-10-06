@@ -51,7 +51,7 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user: Path `username` is required.');
+        expect(res.body.error).toBe('Error creating user: Path `username` is required.');
         done();
       });
     });
@@ -67,7 +67,7 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user: Path `email` is required.');
+        expect(res.body.error).toBe('Error creating user: Path `email` is required.');
         done();
       });
     });
@@ -83,7 +83,7 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user: Path `password` is required.');
+        expect(res.body.error).toBe('Error creating user: Path `password` is required.');
         done();
       });
     });
@@ -99,7 +99,7 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user: Path `firstname` is required.');
+        expect(res.body.error).toBe('Error creating user: Path `firstname` is required.');
         done();
       });
     });
@@ -115,7 +115,7 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(400);
-        expect(res.body.message).toBe('Error creating user: Path `lastname` is required.');
+        expect(res.body.error).toBe('Error creating user: Path `lastname` is required.');
         done();
       });
     });

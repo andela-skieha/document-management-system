@@ -27,7 +27,7 @@ module.exports = {
       if (err) {
         if (err.code === 11000) {
           error = err.message.match(/index:(.*?)_/)[1].trim();
-          res.status(409).send({ message: `Duplicate ${error}.` });
+          res.status(409).send({ error: `Duplicate ${error}.` });
         } else {
           if (!req.body.username) error = err.errors.username.message;
           if (!req.body.email) error = err.errors.email.message;
@@ -38,7 +38,7 @@ module.exports = {
           if (!req.body.lastname) {
             error = err.errors['name.lastname'].message.replace(/name\./gi, '');
           }
-          res.status(400).send({ message: `Error creating user: ${error}` });
+          res.status(400).send({ error: `Error creating user: ${error}` });
         }
       } else {
         const userData = {
@@ -132,9 +132,11 @@ module.exports = {
           if (req.body.password) user.password = req.body.password;
 
           user.save((error) => {
+            let updateError;
             if (error) {
               if (error.code === 11000 || error.code === 11001) {
-                res.status(409).send({ error: 'Duplicate entry.' });
+                updateError = error.message.match(/index:(.*?)_/)[1].trim();
+                res.status(409).send({ error: `Duplicate ${updateError}.` });
               } else {
                 res.status(500).send({ error });
               }
