@@ -134,7 +134,8 @@ module.exports = {
             if (error) {
               if (error.code === 11000) {
                 res.status(409).send({ error: 'Duplicate entry: Title already exists.' });
-                return;
+              } else {
+                res.status(500).send({ error });
               }
             } else {
               res.status(200).send({
