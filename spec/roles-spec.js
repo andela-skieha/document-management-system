@@ -9,36 +9,32 @@ describe('Role routes', () => {
   let roleId;
   let adminToken;
 
-  beforeAll((done) => {
+  it('Creates new roles with a unique title', (done) => {
     request
       .post('/api/users/login')
       .send({
         username: 'maybesydney',
         password: 'password3',
       })
-      .end((err, res) => {
-        token = res.body.token;
-        done();
-      });
-  });
-
-  it('Creates new roles with a unique title', (done) => {
-    request
-      .post('/api/roles')
-      .set('x-access-token', token)
-      .send({
-        title: 'Seeders',
-        members: [
-          '57c96a56cd9ca231483f0829',
-          '9e799c0e692b79bdc83f082a',
-        ],
-      })
-      .end((err, res) => {
-        roleId = res.body.role._id;
-        expect(res.status).toBe(201);
-        expect(res.body.message).toBe('Role created successfully.');
-        expect(res.body.role).toBeDefined();
-        done();
+      .end((error, response) => {
+        token = response.body.token;
+        request
+          .post('/api/roles')
+          .set('x-access-token', token)
+          .send({
+            title: 'Seeders',
+            members: [
+              '57c96a56cd9ca231483f0829',
+              '9e799c0e692b79bdc83f082a',
+            ],
+          })
+          .end((err, res) => {
+            roleId = res.body.role._id;
+            expect(res.status).toBe(201);
+            expect(res.body.message).toBe('Role created successfully.');
+            expect(res.body.role).toBeDefined();
+            done();
+          });
       });
   });
 

@@ -9,33 +9,29 @@ describe('Document routes', () => {
   let token;
   let documentId;
 
-  beforeAll((done) => {
+  it('Creates new documents', (done) => {
     request
       .post('/api/users/login')
       .send({
         username: 'maybesydney',
         password: 'password3',
       })
-      .end((err, res) => {
-        token = res.body.token;
-        done();
-      });
-  });
-
-  it('Creates new documents', (done) => {
-    request
-      .post('/api/documents')
-      .set('x-access-token', token)
-      .send({
-        title: 'Adele',
-        content: 'Rumour has it',
-      })
-      .end((err, res) => {
-        documentId = res.body.document._id;
-        expect(res.status).toBe(201);
-        expect(res.body.message).toBe('Document created successfully.');
-        expect(res.body.document).toBeDefined();
-        done();
+      .end((error, response) => {
+        token = response.body.token;
+        request
+          .post('/api/documents')
+          .set('x-access-token', token)
+          .send({
+            title: 'Adele',
+            content: 'Rumour has it',
+          })
+          .end((err, res) => {
+            documentId = res.body.document._id;
+            expect(res.status).toBe(201);
+            expect(res.body.message).toBe('Document created successfully.');
+            expect(res.body.document).toBeDefined();
+            done();
+          });
       });
   });
 

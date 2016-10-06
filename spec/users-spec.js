@@ -13,20 +13,6 @@ describe('User routes', () => {
   let userId;
   let adminToken;
 
-  beforeAll((done) => {
-    request
-      .post('/api/users/login')
-      .send({
-        username: 'janedoe',
-        password: 'password1',
-      })
-      .end((err, res) => {
-        token = res.body.token;
-        userId = res.body.user_id;
-        done();
-      });
-  });
-
   it('checks if new users are unique', (done) => {
     const username = User.schema.path('username');
     const email = User.schema.path('email');
@@ -96,12 +82,22 @@ describe('User routes', () => {
 
   it('Cannot get users if user is not admin', (done) => {
     request
-      .get('/api/users')
-      .set('x-access-token', token)
-      .end((err, res) => {
-        expect(res.status).toBe(403);
-        expect(res.body.error).toBe('You are not authorized to access this resource.');
-        done();
+      .post('/api/users/login')
+      .send({
+        username: 'janedoe',
+        password: 'password1',
+      })
+      .end((error, response) => {
+        token = response.body.token;
+        userId = response.body.user_id;
+        request
+          .get('/api/users')
+          .set('x-access-token', token)
+          .end((err, res) => {
+            expect(res.status).toBe(403);
+            expect(res.body.error).toBe('You are not authorized to access this resource.');
+            done();
+          });
       });
   });
 
