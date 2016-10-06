@@ -35,7 +35,6 @@ describe('User Authentication', () => {
       })
       .end((err, res) => {
         expect(res.status).toBe(409);
-        expect(res.body.message).toBe('Duplicate username.');
         done();
       });
   });
