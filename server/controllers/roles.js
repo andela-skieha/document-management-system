@@ -92,9 +92,10 @@ module.exports = {
 
           role.save((error) => {
             if (error) {
-              if (error.code === 11000) {
+              if (error.code === 11000 || error.code === 11001) {
                 res.status(409).send({ error: 'Duplicate entry.' });
-                return;
+              } else {
+                res.status(500).send({ error });
               }
             } else {
               res.status(200).send({
