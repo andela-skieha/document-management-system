@@ -132,10 +132,12 @@ module.exports = {
 
           document.save((error) => {
             if (error) {
-              if (error.code === 11000) {
+              if (error.code === 11000 || error.code === 11001) {
                 res.status(409).send({ error: 'Duplicate entry: Title already exists.' });
+                console.log('ERROR', error);
               } else {
                 res.status(500).send({ error });
+                console.log('ERROR 2', error);
               }
             } else {
               res.status(200).send({
