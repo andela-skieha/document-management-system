@@ -157,4 +157,4 @@ MONGO_SECRET='this is super secret'
 `x-access-token: token_received_on_login`
 
 
-###### *Made with ❤️ by [Njeri Kieha](https://github.com/andela-skieha)*
+###### *Made with ❤️ by [Njeri Kieha](https://github.com/kieha)*
