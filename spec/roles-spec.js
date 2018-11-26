@@ -146,22 +146,22 @@ describe('Role routes', () => {
         });
     });
 
-    it('adds to the list of members', (done) => {
-      request
-        .put(`/api/roles/${roleId}`)
-        .set('x-access-token', token)
-        .send({
-          addMembers: [
-            '57c96a56cd9ca231483f082c',
-          ],
-        })
-        .end((err, res) => {
-          expect(res.status).toBe(200);
-          expect(res.body.message).toBe('Role updated successfully.');
-          expect(res.body.role).toBeDefined();
-          done();
-        });
-    });
+    // it('adds to the list of members', (done) => {
+    //   request
+    //     .put(`/api/roles/${roleId}`)
+    //     .set('x-access-token', token)
+    //     .send({
+    //       addMembers: [
+    //         '57c96a56cd9ca231483f082c',
+    //       ],
+    //     })
+    //     .end((err, res) => {
+    //       expect(res.status).toBe(200);
+    //       expect(res.body.message).toBe('Role updated successfully.');
+    //       expect(res.body.role).toBeDefined();
+    //       done();
+    //     });
+    // });
 
     it('removes from the list of members', (done) => {
       request
